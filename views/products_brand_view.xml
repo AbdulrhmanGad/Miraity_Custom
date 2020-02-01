@@ -1,44 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="product_brand_search_form_view" model="ir.ui.view">
-        <field name="name">product.brand.search.form</field>
-        <field name="model">product.brand</field>
-        <field name="arch" type="xml">
-            <search string="Product Brand">
-                <field name="name"/>
-                <field name="partner_id"/>
-            </search>
-        </field>
-    </record>
-
-   <!-- <act_window
-            id="action_open_brand_products"
-            name="Brand Products"
-            res_model="product.template"
-            view_type="form"
-            view_mode="form,tree"
-            domain="[('product_brand_id', '=', active_id)]"/>
-
-    <act_window
-            id="action_open_single_product_brand"
-            name="Product Brand"
-            res_model="product.brand"
-            view_type="form"
-            view_mode="form,tree"
-            target="current"
-            domain="[('product_ids', 'in', active_id)]"/>-->
-
     <record id="view_product_brand_form" model="ir.ui.view">
         <field name="name">product.brand.form</field>
         <field name="model">product.brand</field>
         <field name="arch" type="xml">
             <form>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button"
+                                name="%(product.product_template_action_all)d"
+                                icon="fa-th-list"
+                                type="action"
+                                context="{'search_default_brand_id': active_id, 'default_brand_id': active_id}">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="products_count"/>
+                                </span>
+                                <span class="o_stat_text">Products</span>
+                            </div>
+                        </button>
+                    </div>
                     <field name="logo" widget="image" class="oe_avatar"/>
                     <div class="oe_title">
                         <label for="name" string="Brand Name" class="oe_edit_only"/>
                         <h1>
                             <field name="name"/>
+                        </h1>
+                        <h1>
+                            <field name="code" readonly="1"/>
                         </h1>
                     </div>
                     <group>
@@ -50,6 +39,12 @@
                         <field name="description" nolabel="1"/>
                     </group>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+
             </form>
         </field>
     </record>
@@ -63,6 +58,20 @@
                 <field name="description"/>
                 <field name="partner_id"/>
             </tree>
+        </field>
+    </record>
+
+    <record id="view_product_template_search_brand" model="ir.ui.view">
+        <field name="name">product.template.search.brand</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="brand_id"/>
+                <filter string="Brand" name="group by_brand" domain="[]"
+                        context="{'group_by' : 'brand_id'}"/>
+                <separator/>
+            </field>
         </field>
     </record>
 

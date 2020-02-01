@@ -1,0 +1,10 @@
+<odoo>
+    <data>
+        <record id="brand_sequence" model="ir.sequence">
+            <field name="name">product.brand</field>
+            <field name="code">product.brand</field>
+            <field name="prefix">Br</field>
+            <field name="padding">4</field>
+        </record>
+    </data>
+</odoo>
