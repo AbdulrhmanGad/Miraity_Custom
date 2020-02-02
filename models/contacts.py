@@ -4,6 +4,7 @@ from odoo import api, fields, models
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
+    code = fields.Char(string="Code", readonly=True )
     is_sales_channel = fields.Boolean(string="Sales Channel", )
     is_commission = fields.Boolean(string="Commission", )
     rate = fields.Float(string="Rate", )
@@ -18,6 +19,14 @@ class ResPartner(models.Model):
                                                               ('celebrity', 'Celebrity'),
                                                               ('makeup', 'Makeup Artist'),
                                                               ],)
+
+    @api.model
+    def create(self, values):
+        sequence = self.env.user.company_id.partner_count
+        seq = sequence + 1
+        values['code'] = 'CT' + str(seq).zfill(4)
+        self.env.user.company_id.partner_count += 1
+        return super(ResPartner, self).create(values)
 
 
 class RelatedPartner(models.Model):

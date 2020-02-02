@@ -1,0 +1,19 @@
+<odoo>
+    <data>
+        <!-- Inherit Form View to Modify it -->
+        <record id="miraity_custom_view_inherit_rescompany_form" model="ir.ui.view">
+            <field name="name">view.inherit.company.form</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+
+                <!-- position: after|before|replace|attributes|inside -->
+                <xpath expr="//field[@name='favicon']" position="after">
+                    <field name="product_count"/>
+                </xpath>
+
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -11,9 +11,12 @@
     'data': [
         'security/ir.model.access.csv',
         'data/sequence.xml',
+        'views/company.xml',
         'views/contacts.xml',
         'views/products_brand_view.xml',
         'views/product_category.xml',
+        'views/settings.xml',
+        'wizard/wizard.xml',
     ],
     'installable': True,
     'auto_install': False,

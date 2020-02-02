@@ -6,7 +6,7 @@ class ProductBrand(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = "Product Brand"
 
-    code = fields.Char('Code',)
+    code = fields.Char('Code', )
     name = fields.Char('Brand Name', required=True)
     description = fields.Text(translate=True)
     partner_id = fields.Many2one('res.partner', string='Partner', help='Select a partner for this brand if any.',
@@ -32,5 +32,21 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     brand_id = fields.Many2one('product.brand', string='Brand', help='Select a brand for this product')
-    sku_no = fields.Char('Sku No')
+    sku_no = fields.Char('Sku No', readonly=True)
 
+    def get_first_child(self, categ_id):
+        if categ_id.parent_id.parent_id:
+            self.get_first_child(categ_id.parent_id.parent_id)
+        else:
+            return categ_id
+
+    @api.model
+    def create(self, values):
+        sequence = self.env.user.company_id.product_count
+        categ_id = self.env['product.category'].browse(values['categ_id'])
+        category_id = self.get_first_child(categ_id.parent_id)
+        if category_id:
+            seq = sequence + 1
+            values['sku_no'] = 'MRT' + category_id.name[:2] + str(seq).zfill(6)
+            self.env.user.company_id.product_count += 1
+        return super(ProductTemplate, self).create(values)
