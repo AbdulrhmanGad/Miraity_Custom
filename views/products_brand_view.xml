@@ -99,9 +99,31 @@
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_only_form_view"/>
         <field name="arch" type="xml">
+
+            <div name="button_box" position="inside">
+                <button type="action" class="oe_stat_button" icon="fa-play-circle-o">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="magento_qty" widget="statinfo" nolabel="1"/>
+                        </span>
+                        <span class="o_stat_text">Update Magento QTY</span>
+                    </div>
+                </button>
+                <button type="action" class="oe_stat_button" icon="fa-play-circle-o">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value">
+                            <field name="magento_test_qty" widget="statinfo" nolabel="1"/>
+                        </span>
+                        <span class="o_stat_text">Update Magento Test QTY</span>
+                    </div>
+                </button>
+            </div>
             <xpath expr="//field[@name='barcode']" position="after">
                 <field name='brand_id'/>
                 <field name='sku_no'/>
+                <field name='ready_test_qty'/>
+                <field name='magento_qty'/>
+                <field name='magento_test_qty'/>
             </xpath>
         </field>
     </record>

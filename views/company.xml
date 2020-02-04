@@ -9,7 +9,8 @@
 
                 <!-- position: after|before|replace|attributes|inside -->
                 <xpath expr="//field[@name='favicon']" position="after">
-                    <field name="product_count"/>
+                    <field name="product_count" invisible="1"/>
+                    <field name="sku_short"/>
                 </xpath>
 
             </field>

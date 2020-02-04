@@ -2,11 +2,9 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import logging
-
 from odoo.tools.translate import _
 from odoo.tools import email_split
 from odoo.exceptions import UserError
-
 from odoo import api, fields, models
 
 
@@ -25,19 +23,16 @@ class MissingProductSku(models.TransientModel):
                 for product in product_ids:
                     category_id = product.get_first_child(product.categ_id.parent_id)
                     if category_id:
-                        sequence = self.env.user.company_id.product_count
-                        seq = sequence + 1
-                        product.sku_no = 'MRT' + category_id.name[:2] + str(seq).zfill(6)
-                        self.env.user.company_id.product_count += 1
+                        seq = category_id.product_count
+                        product.sku_no = self.env.user.company_id.sku_short + category_id.name[:2] + str(seq).zfill(6)
+                        category_id.product_count += 1
             else:
                 for product in rec.res_ids:
                     category_id = product.get_first_child(product.categ_id.parent_id)
                     if category_id:
-                        sequence = self.env.user.company_id.product_count
-                        seq = sequence + 1
-                        product.sku_no = 'MRT' + category_id.name[:2] + str(seq).zfill(6)
-                        self.env.user.company_id.product_count += 1
-                        print(self.env.user.company_id.product_count)
+                        seq = category_id.product_count
+                        product.sku_no = self.env.user.company_id.sku_short + category_id.name[:2] + str(seq).zfill(6)
+                        category_id.product_count += 1
         return {'type': 'ir.actions.act_window_close'}
 
 

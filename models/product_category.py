@@ -7,7 +7,7 @@ class ProductBrand(models.Model):
     _inherit = 'product.category'
 
     short_name = fields.Char(string="Short Name", size=2)
-    sequence_count = fields.Char(string="Sequence counter", )
+    product_count = fields.Integer(string="product sequence", )
 
     @api.constrains('short_name')
     @api.onchange('short_name')

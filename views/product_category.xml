@@ -13,7 +13,7 @@
                             <span>
                                 <field name="short_name" placeholder="Aa"/>
                             </span>
-                            <field name="sequence_count" invisible="0"/>
+                            <field name="product_count" invisible="0"/>
                         </group>
                     </group>
                 </xpath>

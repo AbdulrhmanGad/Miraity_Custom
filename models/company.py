@@ -6,4 +6,4 @@ class ResCompany(models.Model):
     _inherit = 'res.company'
 
     product_count = fields.Integer(string="product sequence", )
-    partner_count = fields.Integer(string="product sequence", )
+    sku_short = fields.Char(string="Sku Short", size=3)
