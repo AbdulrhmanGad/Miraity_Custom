@@ -11,6 +11,9 @@
                 <xpath expr="//field[@name='favicon']" position="after">
                     <field name="product_count" invisible="1"/>
                     <field name="sku_short"/>
+                    <field name="acc_receive_prefix"/>
+                    <field name="acc_payable_prefix"/>
+                    <field name="account_sequence"/>
                 </xpath>
 
             </field>

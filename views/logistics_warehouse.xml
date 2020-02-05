@@ -1,0 +1,16 @@
+<odoo>
+    <data>
+
+
+        <record id="action_warehouse_logistics_view" model="ir.actions.act_window">
+            <field name="name">Logistics &amp; Warehouse</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sale.order</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+        </record>
+
+        <menuitem id="menu_logistics_warehouse_root" name="Logistics  &amp; Warehouse" sequence="10"/>
+        <menuitem id="menu_logistics_warehouse_logistics" name="Logistics  &amp; Warehouse"
+                  parent="menu_logistics_warehouse_root" action="action_warehouse_logistics_view" sequence="1"/>
+    </data>
+</odoo>
