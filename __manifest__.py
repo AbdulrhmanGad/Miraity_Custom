@@ -1,7 +1,7 @@
 {
     'name': 'Miraity Custom',
     'version': '1',
-    'summary': 'Miraity Custom Work',
+    'summary': 'Miraity Custom Work1',
     'description': 'Customization made for miraity company, include contact, purchase, sales, Inventory, sales modifications ',
     'category': 'Operations',
     'author': 'Ahmed Maher',

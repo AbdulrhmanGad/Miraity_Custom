@@ -13,12 +13,21 @@
                     <div id="channel_setting">
                         <h2>Channel Settings</h2>
                         <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-12 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class='o_form_label'>
+                                        Create New Accounts For Customers
+                                    </span>
+                                    <field name='is_account_prefix'/>
+                                    <br/>
+                                </div>
+                            </div>
                             <div class="col-12 col-lg-6 o_setting_box">
                                 <div class="o_setting_right_pane">
                                     <span class='o_form_label'>
                                         Account Receivable Prefix
                                     </span>
-                                    <field name='acc_receive_prefix'/>
+                                    <field name='account_receive_id'/>
                                     <br/>
                                 </div>
                             </div>
@@ -27,15 +36,40 @@
                                     <span class='o_form_label'>
                                         Account Payable Prefix
                                     </span>
-                                    <field name='acc_payable_prefix'/>
+                                    <field name='account_payable_id'/>
                                 </div>
                             </div>
-                            <div class="col-12 col-lg-6 o_setting_box">
+                        </div>
+                    </div>
+                    <div id="channel_setting">
+                        <h2>Warehouse Management</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg12- o_setting_box">
                                 <div class="o_setting_right_pane">
                                     <span class='o_form_label'>
-                                        Testing Warehouse
+                                        Warehouse Management
                                     </span>
                                     <field name='warehouse_id'/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="channel_setting">
+                        <h2>Magento Integration</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg12- o_setting_box">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="channel_setting">
+                        <h2>Call Center Integration</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg12- o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class='o_form_label'>
+                                        Token KEY
+                                    </span>
+                                    <field name='token_key'/>
                                 </div>
                             </div>
                         </div>
@@ -54,13 +88,13 @@
     </record>
 
 
-    <menuitem
-            id="sale_channel_config"
-            name="Channel Settings"
-            parent="base.menu_administration"
-            sequence="90"
-            action="action_channel_config"
-            web_icon="miraity_customization,static/description/icon.png"
-            groups="base.group_system"/>
+<!--    <menuitem-->
+<!--            id="sale_channel_config"-->
+<!--            name="Channel Settings"-->
+<!--            parent="base.menu_administration"-->
+<!--            sequence="90"-->
+<!--            action="action_channel_config"-->
+<!--            web_icon="miraity_customization,static/description/icon.png"-->
+<!--            groups="base.group_system"/>-->
 
 </odoo>
