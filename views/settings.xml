@@ -10,8 +10,8 @@
                 <div class="app_settings_block" data-string="Channel Settings" string="Channel Settings"
                      data-key="channel_settings">
 
-                    <div id="channel_setting">
-                        <h2>Channel Settings</h2>
+                    <div id="contacts_settings">
+                        <h2>Contacts Settings</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg-12 o_setting_box">
                                 <div class="o_setting_right_pane">
@@ -41,27 +41,27 @@
                             </div>
                         </div>
                     </div>
-                    <div id="channel_setting">
+                    <div id="warehous_setting">
                         <h2>Warehouse Management</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg12- o_setting_box">
                                 <div class="o_setting_right_pane">
                                     <span class='o_form_label'>
-                                        Warehouse Management
+                                        Samples W.H
                                     </span>
-                                    <field name='warehouse_id'/>
+                                    <field name='sample_warehouse'/>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div id="channel_setting">
+                    <div id="magento_integration">
                         <h2>Magento Integration</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg12- o_setting_box">
                             </div>
                         </div>
                     </div>
-                    <div id="channel_setting">
+                    <div id="callcenter_integration">
                         <h2>Call Center Integration</h2>
                         <div class="row mt16 o_settings_container">
                             <div class="col-12 col-lg12- o_setting_box">
@@ -69,7 +69,7 @@
                                     <span class='o_form_label'>
                                         Token KEY
                                     </span>
-                                    <field name='token_key'/>
+                                    <field name='call_center_token'/>
                                 </div>
                             </div>
                         </div>
