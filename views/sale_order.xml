@@ -10,6 +10,7 @@
                 <xpath expr="//field[@name='client_order_ref']" position="after">
                     <field name="is_sales_channel" invisible="1"/>
                     <field name="warehouse_id" readonly="1"/>
+                    <field name="shipping_no" />
                 </xpath>
 
             </field>
