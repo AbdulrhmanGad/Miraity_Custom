@@ -10,10 +10,10 @@
                 <!-- position: after|before|replace|attributes|inside -->
                 <xpath expr="//field[@name='favicon']" position="after">
                     <field name="product_count" invisible="1"/>
-                    <field name="sku_short"/>
-                    <field name="acc_receive_prefix"/>
-                    <field name="acc_payable_prefix"/>
-                    <field name="account_sequence"/>
+                    <field name="short_description"/>
+                    <field name="acc_receive_prefix" invisible="1"/>
+                    <field name="acc_payable_prefix" invisible="1"/>
+                    <field name="account_sequence" invisible="1"/>
                 </xpath>
 
             </field>
