@@ -7,6 +7,8 @@ class ResPartner(models.Model):
 
     code = fields.Char(string="Code", readonly=True)
     is_sales_channel = fields.Boolean(string="Sales Channel", )
+    is_customer = fields.Boolean(string="Customer", )
+    is_vendor = fields.Boolean(string="vendor", )
     is_commission = fields.Boolean(string="Commission", )
     rate = fields.Float(string="Rate", )
     is_date = fields.Boolean(string="With date")
@@ -32,7 +34,6 @@ class ResPartner(models.Model):
     @api.model
     def create(self, values):
         if self.env.user.company_id:
-            print(self.env.user.company_id)
             sequence = self.env.user.company_id.partner_count
             seq = sequence + 1
             values['code'] = 'CT' + str(seq).zfill(4)

@@ -1,4 +1,5 @@
-from odoo import api, fields, models
+from odoo import api, fields, models,_
+from odoo.exceptions import ValidationError
 
 
 class SaleOrder(models.Model):
@@ -9,6 +10,14 @@ class SaleOrder(models.Model):
 
     company_id = fields.Many2one('res.company', string='Company', readonly=True, default=lambda self: self.env.user.company_id)
     warehouse_id = fields.Many2one(comodel_name="stock.warehouse", string="Test Warehouse")
+
+    def action_confirm(self):
+        res = super(SaleOrder, self).action_confirm()
+        for rec in self:
+            if not rec.order_line:
+                raise ValidationError(_("Please Enter Lines"))
+        return  res
+
 
     # @api.constrains('shipping_no')
     # def _onchange_shipping_no(self):

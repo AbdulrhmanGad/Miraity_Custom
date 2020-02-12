@@ -1,0 +1,25 @@
+<odoo>
+    <data>
+        <record id="view_inherit_purchase_form" model="ir.ui.view">
+            <field name="name">view.inherit.purchase.form</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='order_line']/tree/field[@name='product_qty']" position="after">
+                    <field name="sample_qty"/>
+                </xpath>
+                <xpath expr="//button[@name='action_view_invoice']" position="replace">
+                </xpath>
+                <xpath expr="//button[@name='action_view_invoice']" position="replace">
+                    <button name="action_view_invoice" string="Create Bill" type="object" class="oe_highlight"
+                            context="{'create_bill':True}"
+                            attrs="{'invisible': [('state', '!=', 'received')]}"/>
+<!--                    <button name="action_view_invoice" string="Create Bill"-->
+<!--                            attrs="{'invisible': [('state', '!=', 'received')]}"/>-->
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>

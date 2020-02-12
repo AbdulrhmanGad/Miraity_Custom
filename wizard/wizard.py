@@ -14,25 +14,28 @@ class MissingProductSku(models.TransientModel):
 
     res_ids = fields.Many2many(comodel_name="product.template", )
     is_all = fields.Boolean(string="", )
+    to_magento = fields.Boolean(string="To Magento", )
 
     def action_apply(self):
         for rec in self:
+            config =self.env['res.config.settings'].search([], order='id desc', limit=1)
             if rec.is_all:
-                product_ids = self.env['product.template'].search([('sku_no', '=', False)])
-                print(len(product_ids))
+                product_ids = self.env['product.template'].search([('short_description', '=', False)])
                 for product in product_ids:
                     category_id = product.get_first_child(product.categ_id.parent_id)
                     if category_id:
                         seq = category_id.product_count
-                        product.sku_no = self.env.user.company_id.sku_short + category_id.name[:2] + str(seq).zfill(6)
+                        product.sku_no = config.short_description + category_id.name[:2] + str(seq).zfill(6)
                         category_id.product_count += 1
             else:
                 for product in rec.res_ids:
                     category_id = product.get_first_child(product.categ_id.parent_id)
-                    if category_id:
+                    if category_id and config.short_description:
                         seq = category_id.product_count
-                        product.sku_no = self.env.user.company_id.sku_short + category_id.name[:2] + str(seq).zfill(6)
+                        product.sku_no = config.short_description + category_id.name[:2] + str(seq).zfill(6)
                         category_id.product_count += 1
+            if rec.to_magento:
+                print("TO MAGENTO")
         return {'type': 'ir.actions.act_window_close'}
 
 

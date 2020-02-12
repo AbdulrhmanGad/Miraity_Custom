@@ -1,16 +1,48 @@
 <odoo>
     <data>
 
+        <record id="view_product_magento_tree" model="ir.ui.view">
+            <field name="name">view.magento.tree</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <tree string="">
+                    <field name="name"/>
+                    <field name="sku_no"/>
+                    <field name="qty_available"/>
+                    <field name="ready_test_qty"/>
+                    <field name="magento_qty"/>
+                    <field name="magento_test_qty"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_magento_products" model="ir.actions.act_window">
+            <field name="name">Magento Products</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.template</field>
+            <field name="domain">[('e_commerce', '=', True)]</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="view_ids"
+                   eval="[(5, 0, 0),
+                   (0, 0, {'view_mode': 'tree', 'view_id': ref('view_product_magento_tree')}),
+                   ]"/>
 
+        </record>
         <record id="action_warehouse_logistics_view" model="ir.actions.act_window">
             <field name="name">Logistics &amp; Warehouse</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">sale.order</field>
             <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field name="view_ids"
+                   eval="[(5, 0, 0),
+                   (0, 0, {'view_mode': 'tree', 'view_id': ref('sale.view_quotation_tree_with_onboarding')}),
+                   ]"/>
+
         </record>
 
         <menuitem id="menu_logistics_warehouse_root" name="Logistics  &amp; Warehouse" sequence="10"/>
         <menuitem id="menu_logistics_warehouse_logistics" name="Logistics  &amp; Warehouse"
                   parent="menu_logistics_warehouse_root" action="action_warehouse_logistics_view" sequence="1"/>
+        <menuitem id="menu_magento_products" name="Magento Products"
+                  parent="menu_logistics_warehouse_root" action="action_magento_products" sequence="2"/>
     </data>
 </odoo>

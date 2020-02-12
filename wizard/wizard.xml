@@ -22,6 +22,16 @@
             'default_is_all': True,
             }"
                 groups="base.group_partner_manager"/>
+    <act_window id="update_product_to_magento"
+                name="Update To Magento"
+                binding_model="product.template"
+                res_model="miss.product.sku"
+                view_mode="form" target="new"
+                context="{
+            'default_res_ids': active_ids,
+            'default_to_magento': True,
+            }"
+                groups="base.group_partner_manager"/>
 
     <!-- wizard view -->
     <record id="product_wizard_view" model="ir.ui.view">
