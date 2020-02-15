@@ -3,7 +3,7 @@ from odoo import http
 from odoo.http import request
 
 
-class Stokc(http.Controller):
+class Warehouse(http.Controller):
 
     # this search for customer name, phone, mobile, email
     # {"jsonrpc": "2.0","params":{"name":"1014527537"}}

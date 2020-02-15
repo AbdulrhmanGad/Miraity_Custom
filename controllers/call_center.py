@@ -11,7 +11,7 @@ class Customer(http.Controller):
     @http.route('/search/customer', type='json', auth='user')
     def search_customer(self, **kw):
         config = http.request.env['res.config.settings'].search([], order='id desc', limit=1)
-        if config.token_key and config.token_key == kw['token']:
+        if config.call_center_token and config.call_center_token == kw['token']:
             customer_ids = http.request.env['res.partner'].search(['|', '|', '|', ('name', 'ilike', kw['name']),
                                                                    ('phone', 'ilike', kw['name']),
                                                                    ('mobile', 'ilike', kw['name']),
@@ -24,7 +24,8 @@ class Customer(http.Controller):
         else:
             args = {
                 'success': False,
-                'message': 'Failed Token error',
+                'message': ' ',
+                'code': '102',
                 'ID': None,
             }
 
@@ -46,7 +47,7 @@ class Customer(http.Controller):
     @http.route('/search/order', type='json', auth='user')
     def search_order(self, **kw):
         config = http.request.env['res.config.settings'].search([], order='id desc', limit=1)
-        if config.token_key and config.token_key == kw['token']:
+        if config.call_center_token and config.call_center_token == kw['token']:
             customer_ids = http.request.env['res.partner'].search(['|', '|', '|', '|', ('name', 'ilike', kw['name']),
                                                                    ('phone', 'ilike', kw['name']),
                                                                    ('mobile', 'ilike', kw['name']),
@@ -67,11 +68,15 @@ class Customer(http.Controller):
                 orders.append({'customer': customer.name,
                                'order': order})
 
-            return {'success': True, 'message': "Success", 'orders': orders}
+            return {
+                'success': True,
+                'message': "Success",
+                'orders': orders}
         else:
             args = {
                 'success': False,
                 'message': 'Failed Token error',
+                'code': '102',
                 'ID': None,
             }
 
@@ -81,7 +86,7 @@ class Customer(http.Controller):
     @http.route('/search/order/products', type='json', auth='user')
     def search_order_products(self, **kw):
         config = http.request.env['res.config.settings'].search([], order='id desc', limit=1)
-        if config.token_key and config.token_key == kw['token']:
+        if config.call_center_token and config.call_center_token == kw['token']:
             sale_id = http.request.env['sale.order'].search([('name', '=', kw['name'])])
             order = []
             for sale in sale_id.order_line:
@@ -96,6 +101,39 @@ class Customer(http.Controller):
             args = {
                 'success': False,
                 'message': 'Failed Token error',
+                'code': '102',
+                'ID': None,
+            }
+
+            return args
+
+    # {"jsonrpc": "2.0","params":{
+    # "token": "MIR123456789",
+    # "customer_code":""
+    # "sale_order_id":""
+    # "product_id":""
+    # "priority":""
+    # }}
+    @http.route('/create/ticket', type='json', auth='user')
+    def search_customer(self, **kw):
+        config = http.request.env['res.config.settings'].search([], order='id desc', limit=1)
+        if config.call_center_token and config.call_center_token == kw['token']:
+            partner_id = http.request.env['res.partner'].search([('code', '=', kw['customer_code'])])
+            sale_id = http.request.env['sale.order'].search([('name', '=', kw['sale_order'])])
+            product_id = http.request.env['product.product'].search([('sku_no', '=', kw['product_sku'])], limit=1)
+            if partner_id and sale_id and product_id and kw['name']:
+                http.request.env['helpdesk.ticket'].create({
+                    'partner_id': partner_id.id,
+                    'sale_order_id': sale_id.id,
+                    'product_id': product_id.id,
+                    'name': kw['name'] ,
+                })
+                return {'success': True, 'message': "Success, Ticket created", }
+        else:
+            args = {
+                'success': False,
+                'message': 'Failed Token error',
+                'code': '102',
                 'ID': None,
             }
 
