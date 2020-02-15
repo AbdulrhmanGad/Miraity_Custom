@@ -68,12 +68,38 @@
                                     <field name='outsource_warehouse_id'/>
                                 </div>
                             </div>
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class='o_form_label'>
+                                        Examination W.H
+                                    </span>
+                                    <field name='examination_warehouse_id'/>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-12 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class='o_form_label'>
+                                        WH Token KEY
+                                    </span>
+                                    <field name='warehouse_token' readonly="1"/>
+                                    <button name="generate_warehouse_token" class="oe_highlight" type="object"
+                                            string="Generate Token"/>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div id="magento_integration">
                         <h2>Magento Integration</h2>
                         <div class="row mt16 o_settings_container">
-                            <div class="col-12 col-lg12- o_setting_box">
+                            <div class="col-12 col-lg-12 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class='o_form_label'>
+                                        Magento Token KEY
+                                    </span>
+                                    <field name='magento_token' readonly="1"/>
+                                    <button name="generate_magento_token" class="oe_highlight" type="object"
+                                            string="Generate Token"/>
+                                </div>
                             </div>
                         </div>
                     </div>

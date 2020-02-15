@@ -16,13 +16,21 @@ class ResConfigSettings(models.TransientModel):
                                    config_parameter='base_setup.warehouse_id', default_model="sale.order")
     sample_warehouse_id = fields.Many2one(comodel_name="stock.warehouse", string="Test Warehouse",
                                    config_parameter='base_setup.sample_warehouse_id', )
+    examination_warehouse_id = fields.Many2one(comodel_name="stock.warehouse", string="ْxamination  Warehouse",
+                                   config_parameter='base_setup.examination_warehouse_id', )
     outsource_warehouse_id = fields.Many2one(comodel_name="stock.warehouse", string="Test Warehouse",
                                    config_parameter='base_setup.outsource_warehouse_id', )
     token_key = fields.Char(string="Token Key", config_parameter='base_setup.token', )
-    short_description = fields.Char(string="Short Description", config_parameter='base_setup.short_description', )
     call_center_token = fields.Char(string="Call Center Token Key", config_parameter='base_setup.call_center_token', )
+    warehouse_token = fields.Char(string="WH Token Key", config_parameter='base_setup.warehouse_token', )
+    magento_token = fields.Char(string="Magento Token Key", config_parameter='base_setup.magento_token', )
+    short_description = fields.Char(string="Short Description", config_parameter='base_setup.short_description', )
 
     def generate_call_center_token(self):
-        for rec in self:
             self.env['ir.config_parameter'].sudo().set_param('base_setup.call_center_token', secrets.token_hex(20))
 
+    def generate_warehouse_token(self):
+            self.env['ir.config_parameter'].sudo().set_param('base_setup.warehouse_token', secrets.token_hex(20))
+
+    def generate_magento_token(self):
+            self.env['ir.config_parameter'].sudo().set_param('base_setup.magento_token', secrets.token_hex(20))

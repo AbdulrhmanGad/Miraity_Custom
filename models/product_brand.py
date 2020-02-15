@@ -51,6 +51,7 @@ class ProductTemplate(models.Model):
         category_id = self.get_first_child(categ_id.parent_id)
         if category_id:
             seq = category_id.product_count
-            values['sku_no'] = self.env.user.company_id.short_description + category_id.name[:2] + str(seq).zfill(6)
+            config = self.env['res.config.settings'].search([], order='id desc', limit=1)
+            values['sku_no'] = config.short_description + category_id.name[:2] + str(seq).zfill(6)
             category_id.product_count += 1
         return super(ProductTemplate, self).create(values)

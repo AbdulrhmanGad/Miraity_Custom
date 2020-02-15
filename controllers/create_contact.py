@@ -4,20 +4,15 @@ from odoo.http import  request
 
 
 class CreateContact(http.Controller):
-    
-    # {"jsonrpc": "2.0","params":{"db":"odoo13","login":"admin","password":"admin"}}
-    @http.route('/web/session/authauthenticate',type='json', auth='none')
-    def authenticate(self, db, login, password, base_location=None):
-        request.session.authenticate(db, login, password)
-        # return request.env['ir.http'].session_info()
-        return  { 'success':True, 'message':"Success", }
 
     #  {"jsonrpc": "2.0","params": {"name": "Mohammmed API", "phone": "00244126090", "mobile": "01014527537", "email": "aaa@gmail.com"}}
     @http.route('/create/contact', type='json', method=['POST'], auth='user')
     def create_contact(self, **kw):
         if request.jsonrequest:
             config = http.request.env['res.config.settings'].search([], order='id desc', limit=1)
-            if config.token_key and config.token_key == kw['token']:
+            print(config.call_center_token ,"==", kw['token'])
+            print(config.magento_token ,"==", kw['token'])
+            if config.magento_token and config.magento_token == kw['token']:
                 if config.is_account_prefix == True:
                     rec_code = 0
                     pre_code = 0
@@ -67,28 +62,38 @@ class CreateContact(http.Controller):
                     else:
                         args = {
                             'success': False,
-                            'message': 'Failed',
+                            'message': 'Failed, Can not create account payable or account receive',
+                            'code': '201',
                             'ID': None,
                         }
                         return args
                 else:
-                    vals = {
-                        'name': kw['name'],
-                        'phone': kw['phone'],
-                        'mobile': kw['mobile'],
-                        'email': kw['email'],
-                    }
-                    new_contact = request.env['res.partner'].sudo().create(vals)
-                    args = {
-                        'success': True,
-                        'message': "Success",
-                        'ID': new_contact.id,
-                    }
-                    return args
+                    try:
+                        vals = {
+                            'name': kw['name'],
+                            'phone': kw['phone'],
+                            'mobile': kw['mobile'],
+                            'email': kw['email'],
+                        }
+                        new_contact = request.env['res.partner'].sudo().create(vals)
+                        args = {
+                            'success': True,
+                            'message': "Success",
+                            'ID': new_contact.id,
+                        }
+                        return args
+                    except:
+                        args = {
+                            'success': False,
+                            'message': 'Failed, KEYS Does not Match check spilling',
+                            'code': '202',
+                            'ID': None,
+                        }
             else:
                 args = {
                     'success': False,
                     'message': 'Failed Token error',
+                    'code': '102',
                     'ID': None,
                 }
         return args

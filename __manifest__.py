@@ -10,6 +10,7 @@
     'depends': ['base', 'contacts', 'stock', 'account', 'sale', 'purchase'],
     'data': [
         'security/ir.model.access.csv',
+        'security/secrity_warehouse.xml',
         'data/sequence.xml',
         'views/company.xml',
         'views/contacts.xml',
