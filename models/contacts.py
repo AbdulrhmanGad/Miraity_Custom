@@ -22,7 +22,12 @@ class ResPartner(models.Model):
                                                               ('2', 'Celebrity'),
                                                               ('3', 'Makeup Artist'),
                                                               ], )
-
+    order_all = fields.Float(string="Order All",)
+    order_paid = fields.Float(string="Order Paid",)
+    order_pending = fields.Float(string="Order Pending",)
+    balance_all = fields.Float(string="Balance All",)
+    balance_paid = fields.Float(string="Balance Paid",)
+    balance_pending = fields.Float(string="Balance Pending",)
     @api.onchange('channel_type')
     @api.constrains('channel_type')
     def _constrains_channel_type(self):

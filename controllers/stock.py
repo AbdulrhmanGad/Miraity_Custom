@@ -11,23 +11,34 @@ class Warehouse(http.Controller):
     @http.route('/create/stock', type='json', auth='user')
     def create_stock(self, **kw):
         config = http.request.env['res.config.settings'].sudo().search([], order='id desc', limit=1)
-        if config.call_center_token and config.call_center_token == kw['token']:
-            purchase_id = http.request.env['purchase.order'].sudo().search([('name', '=', kw['po_number'])])
-            for pick in purchase_id.picking_ids:
-                pick.partner_id = purchase_id.partner_id.id
-                if pick.state not in ['done', 'cancel']:
-                    for move in pick.move_ids_without_package:
-                        for product in kw['products']:
-                            if product['sku_no'] == move.product_id.sku_no:
-                                move.quantity_done = product['delivered_qty']
-                    pick.button_validate()
+        session = request.env['ir.http'].session_info()
+        if session['uid'] and session['uid'] == config.wh_user_id.id:
+            if config.call_center_token and config.call_center_token == kw['token']:
+                purchase_id = http.request.env['purchase.order'].sudo().search([('name', '=', kw['po_number'])])
+                for pick in purchase_id.picking_ids:
+                    pick.partner_id = purchase_id.partner_id.id
+                    if pick.state not in ['done', 'cancel']:
+                        for move in pick.move_ids_without_package:
+                            for product in kw['products']:
+                                if product['sku_no'] == move.product_id.sku_no:
+                                    move.quantity_done = product['delivered_qty']
+                        pick.button_validate()
 
-            return {'success': True, 'message': "Success", 'code': '555'}
+                return {'success': True, 'message': "Success", 'code': '555'}
+            else:
+                args = {
+                    'success': False,
+                    'message': 'Failed Token error',
+                    'ID': None,
+                }
+
         else:
             args = {
                 'success': False,
-                'message': 'Failed Token error',
+                'message': 'User error',
+                'code': '1000002',
                 'ID': None,
             }
 
             return args
+

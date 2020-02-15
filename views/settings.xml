@@ -7,19 +7,18 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//div[hasclass('settings')]" position="inside">
-                <div class="app_settings_block" data-string="Channel Settings" string="Channel Settings"
-                     data-key="channel_settings">
+                <div class="app_settings_block" data-string="Miraity Settings" string="Miraity Settings"
+                     data-key="miraity_settings">
 
                     <div id="contacts_settings">
                         <h2>Contacts Settings</h2>
                         <div class="row mt16 o_settings_container">
-                            <div class="col-12 col-lg-12 o_setting_box">
+                            <div class="col-6 col-lg-6 o_setting_box">
                                 <div class="o_setting_right_pane">
                                     <span class='o_form_label'>
                                         Create New Accounts For Customers
+                                        <field name='is_account_prefix'/>
                                     </span>
-                                    <field name='is_account_prefix'/>
-                                    <br/>
                                 </div>
                             </div>
                             <div class="col-12 col-lg-6 o_setting_box">
@@ -28,11 +27,6 @@
                                         Account Receivable Prefix
                                     </span>
                                     <field name='account_receive_id'/>
-                                    <br/>
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-6 o_setting_box">
-                                <div class="o_setting_right_pane">
                                     <span class='o_form_label'>
                                         Account Payable Prefix
                                     </span>
@@ -42,7 +36,7 @@
                             <div class="col-12 col-lg-6 o_setting_box">
                                 <div class="o_setting_right_pane">
                                     <span class='o_form_label'>
-                                        Short Description
+                                        SKU Beginning Letter
                                     </span>
                                     <field name='short_description'/>
                                 </div>
@@ -52,23 +46,40 @@
                     <div id="warehous_setting">
                         <h2>Warehouse Management</h2>
                         <div class="row mt16 o_settings_container">
-                            <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="col-6 col-lg-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class='o_form_label'>
+                                        User
+                                    </span>
+                                    <field name='wh_user_id'/>
+                                </div>
+
+                                <div class="o_setting_right_pane">
+                                    <span class='o_form_label'>
+                                        Token KEY
+                                    </span>
+                                    <button name="generate_warehouse_token" class="glyphicon glyphicon-refresh"
+                                            type="object">
+                                        <i class="fa fa-refresh"></i>
+                                    </button>
+
+                                    <field name='warehouse_token' readonly="1"/>
+                                </div>
+                            </div>
+                            <div class="col-6 col-lg-6 o_setting_box">
+
                                 <div class="o_setting_right_pane">
                                     <span class='o_form_label'>
                                         Samples W.H
                                     </span>
                                     <field name='sample_warehouse_id'/>
                                 </div>
-                            </div>
-                            <div class="col-12 col-lg-6 o_setting_box">
                                 <div class="o_setting_right_pane">
                                     <span class='o_form_label'>
                                         Out Source W.H
                                     </span>
                                     <field name='outsource_warehouse_id'/>
                                 </div>
-                            </div>
-                            <div class="col-12 col-lg-6 o_setting_box">
                                 <div class="o_setting_right_pane">
                                     <span class='o_form_label'>
                                         Examination W.H
@@ -76,47 +87,67 @@
                                     <field name='examination_warehouse_id'/>
                                 </div>
                             </div>
-                            <div class="col-12 col-lg-12 o_setting_box">
-                                <div class="o_setting_right_pane">
-                                    <span class='o_form_label'>
-                                        WH Token KEY
-                                    </span>
-                                    <field name='warehouse_token' readonly="1"/>
-                                    <button name="generate_warehouse_token" class="oe_highlight" type="object"
-                                            string="Generate Token"/>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                     <div id="magento_integration">
                         <h2>Magento Integration</h2>
                         <div class="row mt16 o_settings_container">
-                            <div class="col-12 col-lg-12 o_setting_box">
+                            <div class="col-6 col-lg-6 o_setting_box">
                                 <div class="o_setting_right_pane">
                                     <span class='o_form_label'>
-                                        Magento Token KEY
+                                        User
                                     </span>
-                                    <field name='magento_token' readonly="1"/>
-                                    <button name="generate_magento_token" class="oe_highlight" type="object"
-                                            string="Generate Token"/>
+                                    <field name='magento_user_id'/>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="callcenter_integration">
-                        <h2>Call Center Integration</h2>
-                        <div class="row mt16 o_settings_container">
-                            <div class="col-12 col-lg-12 o_setting_box">
                                 <div class="o_setting_right_pane">
                                     <span class='o_form_label'>
                                         Token KEY
                                     </span>
-                                    <field name='call_center_token' readonly="1"/>
-                                    <button name="generate_call_center_token" class="oe_highlight" type="object"
-                                            string="Generate Token"/>
+                                    <button name="generate_magento_token" class="glyphicon glyphicon-refresh"
+                                            type="object">
+                                        <i class="fa fa-refresh"></i>
+                                    </button>
+                                    <field name='magento_token' readonly="1"/>
                                 </div>
+
+                            </div>
+                            <div class="col-6 col-lg-6 o_setting_box">
                             </div>
                         </div>
+                    </div>
+                    <div id="call_center_integration">
+                        <h2>Call Center Integration</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-6 col-lg-6 o_setting_box">
+                                <div class="o_setting_right_pane">
+                                    <span class='o_form_label'>
+                                        User
+                                    </span>
+                                    <field name='call_center_user_id'/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <span class='o_form_label'>
+                                        Token KEY
+                                    </span>
+                                    <button name="generate_call_center_token" class="glyphicon glyphicon-refresh"
+                                            type="object">
+                                        <i class="fa fa-refresh"></i>
+                                    </button>
+                                    <field name='call_center_token' readonly="1"/>
+                                </div>
+
+                                <div class="o_setting_right_pane">
+                                    <span class='o_form_label'>
+                                        HelpDesk Team
+                                    </span>
+                                    <field name='helpdesk_team_id'/>
+                                </div>
+                            </div>
+                            <div class="col-6 col-lg-6 o_setting_box">
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </xpath>
@@ -128,7 +159,7 @@
         <field name="res_model">res.config.settings</field>
         <field name="view_mode">form</field>
         <field name="target">inline</field>
-        <field name="context">{'module' : 'channel_settings'}</field>
+        <field name="context">{'module' : 'miraity_settings'}</field>
     </record>
 
 

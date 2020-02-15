@@ -15,6 +15,7 @@
         'views/company.xml',
         'views/contacts.xml',
         'views/logistics_warehouse.xml',
+        'views/product_template.xml',
         'views/product_category.xml',
         'views/products_brand_view.xml',
         'views/purchase.xml',

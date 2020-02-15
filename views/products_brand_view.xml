@@ -34,6 +34,9 @@
                         <group>
                             <field name="partner_id"/>
                         </group>
+                        <group>
+                            <field name="active"/>
+                        </group>
                     </group>
                     <group string="Description">
                         <field name="description" nolabel="1"/>
@@ -57,21 +60,8 @@
                 <field name="name"/>
                 <field name="description"/>
                 <field name="partner_id"/>
+                <field name="active"/>
             </tree>
-        </field>
-    </record>
-
-    <record id="view_product_template_search_brand" model="ir.ui.view">
-        <field name="name">product.template.search.brand</field>
-        <field name="model">product.template</field>
-        <field name="inherit_id" ref="product.product_template_search_view"/>
-        <field name="arch" type="xml">
-            <field name="name" position="after">
-                <field name="brand_id"/>
-                <filter string="Brand" name="group by_brand" domain="[]"
-                        context="{'group_by' : 'brand_id'}"/>
-                <separator/>
-            </field>
         </field>
     </record>
 
@@ -93,19 +83,5 @@
     <!-- This Menu Item must have a parent and an action -->
     <menuitem id="menu_brands" name="Brands" parent="stock.menu_stock_inventory_control" action="action_brands"
               sequence="3"/>
-
-    <record id="view_product_template_inherit_tree" model="ir.ui.view">
-        <field name="name">view.product.inherit.tree</field>
-        <field name="model">product.template</field>
-        <field name="inherit_id" ref="product.product_template_tree_view"/>
-        <field name="arch" type="xml">
-
-            <xpath expr="//field[@name='default_code']" position="after">
-                <field name="sku_no"/>
-            </xpath>
-
-        </field>
-    </record>
-
 
 </odoo>

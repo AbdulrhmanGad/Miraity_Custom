@@ -4,6 +4,7 @@ from . import company
 from . import product_brand
 from . import contacts
 from . import product_category
+from . import product_template
 from . import purchase
 from . import sale_order
 from . import settings

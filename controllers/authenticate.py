@@ -10,7 +10,8 @@ class Authenticate(http.Controller):
     def authenticate(self, db, login, password, base_location=None):
         try:
             request.session.authenticate(db, login, password)
-            # return request.env['ir.http'].session_info()
+            session =  request.env['ir.http'].session_info()
+            session['uid']
             return {'success': True, 'message': "Success", }
         except:
             return {'success': False, 'code': '101', 'message': "Authenticate Error", }

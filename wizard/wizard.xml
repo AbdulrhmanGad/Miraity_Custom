@@ -1,25 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- wizard action on res.partner -->
-    <act_window id="generate_missing_produxt_sku"
+
+    <act_window id="generate_all_missing_produxt_sku"
                 name="Generate Missing Product Sku"
                 binding_model="product.template"
                 res_model="miss.product.sku"
                 view_mode="form" target="new"
                 context="{
             'default_res_ids': active_ids,
-            'default_is_all': False,
-            }"
-                groups="base.group_partner_manager"/>
-
-    <act_window id="generate_all_missing_produxt_sku"
-                name="Generate All Missing Product Sku"
-                binding_model="product.template"
-                res_model="miss.product.sku"
-                view_mode="form" target="new"
-                context="{
-            'default_res_ids': active_ids,
-            'default_is_all': True,
             }"
                 groups="base.group_partner_manager"/>
     <act_window id="update_product_to_magento"
@@ -43,7 +31,6 @@
                     YOU Will Generate SKU for Missing Product
                 </div>
                 <field name="res_ids" invisible="1"/>
-                <field name="is_all" invisible="1"/>
                 <footer>
                     <button string="Apply" name="action_apply" type="object" class="btn-primary"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
@@ -52,25 +39,13 @@
         </field>
     </record>
 
-    <act_window id="generate_missing_partner_code"
+    <act_window id="generate_missing_partners_code"
                 name="Generate Missing Contact Code"
                 binding_model="res.partner"
                 res_model="miss.contact.code"
                 view_mode="form" target="new"
                 context="{
             'default_res_ids': active_ids,
-            'default_is_all': False,
-            }"
-                groups="base.group_partner_manager"/>
-
-    <act_window id="generate_missing_partners_code"
-                name="Generate All Missing Contact Code"
-                binding_model="res.partner"
-                res_model="miss.contact.code"
-                view_mode="form" target="new"
-                context="{
-            'default_res_ids': active_ids,
-            'default_is_all': True,
             }"
                 groups="base.group_partner_manager"/>
 
@@ -83,7 +58,6 @@
                     YOU Will Generate Code Partner/s Missed
                 </div>
                 <field name="res_ids" invisible="1"/>
-                <field name="is_all" invisible="1"/>
                 <footer>
                     <button string="Apply" name="action_apply" type="object" class="btn-primary"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>

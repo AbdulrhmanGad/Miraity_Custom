@@ -20,10 +20,20 @@ class ResConfigSettings(models.TransientModel):
                                    config_parameter='base_setup.examination_warehouse_id', )
     outsource_warehouse_id = fields.Many2one(comodel_name="stock.warehouse", string="Test Warehouse",
                                    config_parameter='base_setup.outsource_warehouse_id', )
-    token_key = fields.Char(string="Token Key", config_parameter='base_setup.token', )
+
     call_center_token = fields.Char(string="Call Center Token Key", config_parameter='base_setup.call_center_token', )
+    call_center_token_len = fields.Integer(string="WH Token Length",)
+    call_center_user_id = fields.Many2one(comodel_name="res.users", config_parameter='base_setup.call_center_user_id', )
+    helpdesk_team_id = fields.Many2one(comodel_name="helpdesk.team", config_parameter='base_setup.helpdesk_team_id', )
+
     warehouse_token = fields.Char(string="WH Token Key", config_parameter='base_setup.warehouse_token', )
+    warehouse_token_len = fields.Integer(string="WH Token Length",)
+    wh_user_id = fields.Many2one(comodel_name="res.users", config_parameter='base_setup.wh_user_id', )
+
     magento_token = fields.Char(string="Magento Token Key", config_parameter='base_setup.magento_token', )
+    magento_token_len = fields.Integer(string="WH Token Length",)
+    magento_user_id = fields.Many2one(comodel_name="res.users", config_parameter='base_setup.magento_user_id', )
+
     short_description = fields.Char(string="Short Description", config_parameter='base_setup.short_description', )
 
     def generate_call_center_token(self):

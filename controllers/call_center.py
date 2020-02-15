@@ -10,7 +10,7 @@ class Customer(http.Controller):
     # {"jsonrpc": "2.0","params":{"token": "MIR123456789","name":"Abdulrhman"}}
     @http.route('/search/customer', type='json', auth='user')
     def search_customer(self, **kw):
-        config = http.request.env['res.config.settings'].search([], order='id desc', limit=1)
+        config = http.request.env['res.config.settings'].sudo().search([], order='id desc', limit=1)
         if config.call_center_token and config.call_center_token == kw['token']:
             customer_ids = http.request.env['res.partner'].search(['|', '|', '|', ('name', 'ilike', kw['name']),
                                                                    ('phone', 'ilike', kw['name']),
@@ -31,22 +31,9 @@ class Customer(http.Controller):
 
             return args
 
-    # @http.route('/search/customer/orders', type='json', auth='user')
-    # def search_customer_orders(self, **kw):
-    #     sale_id = http.request.env['sale.order'].search([('name', 'ilike', kw['name'])])
-    #     products = []
-    #     for line in sale_id:
-    #         products.append({
-    #             'product': line.product_id.name,
-    #             'label': line.name,
-    #             'quantity': line.quantity,
-    #         })
-    #
-    #     return {'success': True, 'message': "Success", 'products': products}
-
     @http.route('/search/order', type='json', auth='user')
     def search_order(self, **kw):
-        config = http.request.env['res.config.settings'].search([], order='id desc', limit=1)
+        config = http.request.env['res.config.settings'].sudo().search([], order='id desc', limit=1)
         if config.call_center_token and config.call_center_token == kw['token']:
             customer_ids = http.request.env['res.partner'].search(['|', '|', '|', '|', ('name', 'ilike', kw['name']),
                                                                    ('phone', 'ilike', kw['name']),
@@ -56,8 +43,10 @@ class Customer(http.Controller):
                                                                    ])
             orders = []
             for customer in customer_ids:
+                print(">>>>>>>>>>",customer)
                 sale_ids = http.request.env['sale.order'].search([('partner_id', '=', customer.id)])
                 order = []
+                print(">>>>>>>>>>.",sale_ids)
                 for sale in sale_ids:
                     order.append({
                         'order': sale.name,
@@ -65,6 +54,7 @@ class Customer(http.Controller):
                         'shipping_no': sale.shipping_no,
                         'status': sale.state,
                     })
+                    print(sale)
                 orders.append({'customer': customer.name,
                                'order': order})
 
@@ -108,32 +98,46 @@ class Customer(http.Controller):
             return args
 
     # {"jsonrpc": "2.0","params":{
-    # "token": "MIR123456789",
-    # "customer_code":""
-    # "sale_order_id":""
-    # "product_id":""
-    # "priority":""
+    # "token": "378751c6d257696d6079548cdce82c6c1c90d549",
+    # "name":"Ticket from API",
+    # "customer_code":"CT0003",
+    # "sale_order":"S00039",
+    # "product_sku":"werSa000030"
     # }}
     @http.route('/create/ticket', type='json', auth='user')
-    def search_customer(self, **kw):
+    def create_ticket(self, **kw):
+        print("ALL       ",http.request.env['res.config.settings'].search([], order='id desc',))
         config = http.request.env['res.config.settings'].search([], order='id desc', limit=1)
-        if config.call_center_token and config.call_center_token == kw['token']:
-            partner_id = http.request.env['res.partner'].search([('code', '=', kw['customer_code'])])
-            sale_id = http.request.env['sale.order'].search([('name', '=', kw['sale_order'])])
-            product_id = http.request.env['product.product'].search([('sku_no', '=', kw['product_sku'])], limit=1)
-            if partner_id and sale_id and product_id and kw['name']:
-                http.request.env['helpdesk.ticket'].create({
-                    'partner_id': partner_id.id,
-                    'sale_order_id': sale_id.id,
-                    'product_id': product_id.id,
-                    'name': kw['name'] ,
-                })
-                return {'success': True, 'message': "Success, Ticket created", }
+        session = request.env['ir.http'].session_info()
+        if session['uid'] and  session['uid'] ==  config.call_center_user_id:
+            if config.helpdesk_team_id and config.call_center_token and config.call_center_token == kw['token']:
+                partner_id = http.request.env['res.partner'].search([('code', '=', kw['customer_code'])])
+                sale_id = http.request.env['sale.order'].search([('name', '=', kw['sale_order'])])
+                product_id = http.request.env['product.product'].search([('sku_no', '=', kw['product_sku'])], limit=1)
+                if partner_id and sale_id and product_id and kw['name']:
+                    http.request.env['helpdesk.ticket'].create({
+                        'partner_id': partner_id.id,
+                        'sale_order_id': sale_id.id,
+                        'product_id': product_id.id,
+                        'team_id': config.helpdesk_team_id.id,
+                        'priority': kw['priority'],
+                        'name': kw['name']   ,
+                    })
+                    return {'success': True, 'message': "Success, Ticket created", }
+            else:
+                args = {
+                    'success': False,
+                    'message': 'Failed Token error',
+                    'code': '102',
+                    'ID': None,
+                }
+
+                return args
         else:
             args = {
                 'success': False,
-                'message': 'Failed Token error',
-                'code': '102',
+                'message': 'User error',
+                'code': '1000002',
                 'ID': None,
             }
 

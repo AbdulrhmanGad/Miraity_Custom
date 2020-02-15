@@ -8,6 +8,7 @@ class ProductBrand(models.Model):
 
     short_name = fields.Char(string="Short Name", size=2)
     product_count = fields.Integer(string="product sequence", )
+    active = fields.Boolean('Active', default=True, help="Set active to false to hide the Category without removing it.")
 
     @api.constrains('short_name')
     @api.onchange('short_name')
