@@ -26,6 +26,10 @@
                         <h1>
                             <field name="name"/>
                         </h1>
+                        <label for="ar_name" string="Arabic Name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="ar_name"/>
+                        </h1>
                         <h1>
                             <field name="code" readonly="1"/>
                         </h1>

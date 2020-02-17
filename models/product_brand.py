@@ -8,6 +8,7 @@ class ProductBrand(models.Model):
 
     code = fields.Char('Code', )
     name = fields.Char('Brand Name', required=True)
+    ar_name = fields.Char('Arabic Brand Name')
     description = fields.Text(translate=True)
     partner_id = fields.Many2one('res.partner', string='Partner', help='Select a partner for this brand if any.',
                                  ondelete='restrict')
