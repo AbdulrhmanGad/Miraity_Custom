@@ -6,13 +6,12 @@ from odoo.http import  request
 class CreateContact(http.Controller):
 
     #  {"jsonrpc": "2.0","params": {"name": "Mohammmed API", "phone": "00244126090", "mobile": "01014527537", "email": "aaa@gmail.com"}}
-    @http.route('/create/contact', type='json', method=['POST'], auth='user')
+    @http.route('/create/contact', type='json', method=['POST'], auth='public')
     def create_contact(self, **kw):
         if request.jsonrequest:
             config = http.request.env['res.config.settings'].sudo().search([], order='id desc', limit=1)
-            session = request.env['ir.http'].session_info()
 
-            if session['uid'] and session['uid'] == config.magento_user_id.id:
+            if config.magento_user_id.id:
                 if config.magento_token and config.magento_token == kw['token']:
                     if config.is_account_prefix == True:
                         last_receive_account_id = http.request.env['account.account'].search([('code', 'ilike', config.account_receive_id.code)], order=' id desc', limit=1)
@@ -98,10 +97,9 @@ class CreateContact(http.Controller):
             else:
                 args = {
                     'success': False,
-                    'message': 'User error',
+                    'message': 'Please, Contact Administrator to Allow Magento Setting User',
                     'code': '1000002',
                     'ID': None,
                 }
 
         return args
-

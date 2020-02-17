@@ -4,6 +4,7 @@ from odoo import api, fields, models
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
+    ar_name = fields.Char('Arabic Brand Name')
     brand_id = fields.Many2one('product.brand', string='Brand', help='Select a brand for this product')
     sku_no = fields.Char('Sku No', readonly=True)
     ready_test_qty = fields.Float(string="Sample", )

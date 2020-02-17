@@ -10,6 +10,9 @@ class Warehouse(http.Controller):
     # {"jsonrpc": "2.0","params":{"token": "MIR123456789","name":"Abdulrhman"}}
     @http.route('/create/stock', type='json', auth='user')
     def create_stock(self, **kw):
+        # request.session.authenticate('odoo13', kw['login'], kw['password'])
+        # session = request.env['ir.http'].session_info()
+        # if session:
         config = http.request.env['res.config.settings'].sudo().search([], order='id desc', limit=1)
         session = request.env['ir.http'].session_info()
         if session['uid'] and session['uid'] == config.wh_user_id.id:
@@ -31,7 +34,6 @@ class Warehouse(http.Controller):
                     'message': 'Failed Token error',
                     'ID': None,
                 }
-
         else:
             args = {
                 'success': False,
@@ -40,5 +42,5 @@ class Warehouse(http.Controller):
                 'ID': None,
             }
 
-            return args
+        return args
 
