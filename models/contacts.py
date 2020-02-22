@@ -22,12 +22,13 @@ class ResPartner(models.Model):
                                                               ('2', 'Celebrity'),
                                                               ('3', 'Makeup Artist'),
                                                               ], )
-    order_all = fields.Float(string="Order All",)
-    order_paid = fields.Float(string="Order Paid",)
-    order_pending = fields.Float(string="Order Pending",)
-    balance_all = fields.Float(string="Balance All",)
-    balance_paid = fields.Float(string="Balance Paid",)
-    balance_pending = fields.Float(string="Balance Pending",)
+    order_all = fields.Float(string="Order All", )
+    order_paid = fields.Float(string="Order Paid", )
+    order_pending = fields.Float(string="Order Pending", )
+    balance_all = fields.Float(string="Balance All", )
+    balance_paid = fields.Float(string="Balance Paid", )
+    balance_pending = fields.Float(string="Balance Pending", )
+
     @api.onchange('channel_type')
     @api.constrains('channel_type')
     def _constrains_channel_type(self):
@@ -54,6 +55,18 @@ class RelatedPartner(models.Model):
     commission = fields.Float(string="Commission", required=True)
     start_date = fields.Date(string="Start Date", required=True)
     end_date = fields.Date(string="End Date", required=True)
+
+    # @api.onchange('related_partner_id')
+    # def _onchange_related_partner_id(self):
+    #     for rec in self:
+    #         partner_id = rec.partner_id.id
+    #         print(">>>>>>>part<<<<",partner_id)
+    #         res = {}
+    #         if partner_id:
+    #             res['domain'] = {
+    #                 'related_partner_id': [('id', '!=', partner_id), ('is_sales_channel', '=', True),
+    #                                        ('channel_type', '!=', 'company')]}
+    #         return res
 
 
 class RelatedProducts(models.Model):

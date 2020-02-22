@@ -1,0 +1,30 @@
+<odoo>
+    <data>
+        <record id="mirarity_stock_location_inherit_tree" model="ir.ui.view">
+            <field name="name">view.stock.location.inherit.tree</field>
+            <field name="model">stock.location</field>
+            <field name="inherit_id" ref="stock.view_location_tree2"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='complete_name']" position="after">
+                    <field name="code" readonly="1"/>
+                </xpath>
+
+            </field>
+        </record>
+        <record id="mirarity_stock_location_inherit_form" model="ir.ui.view">
+            <field name="name">view.inherit.location.form</field>
+            <field name="model">stock.location</field>
+            <field name="inherit_id" ref="stock.view_location_form"/>
+            <field name="arch" type="xml">
+
+                <!-- position: after|before|replace|attributes|inside -->
+                <xpath expr="//field[@name='name']" position="after">
+                    <br/>
+                    <field name="code" readonly="1"/>
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</odoo>

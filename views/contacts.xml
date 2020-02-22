@@ -26,7 +26,7 @@
                     </group>
                 </xpath>
                 <xpath expr="//notebook" position="inside">
-                    <page string="Sales Commission" attrs="{'invisible': [('is_sales_channel', '=', False)]}"
+                    <page string="Sales Channels" attrs="{'invisible': [('is_sales_channel', '=', False)]}"
                           groups="sales_team.group_sale_manager">
                         <notebook>
                             <page string="Sales Commission">
@@ -46,8 +46,10 @@
                                 <!--                            <label for="partner_related_ids" string="Related Partners"/>-->
                                 <field name="partner_related_ids">
                                     <tree editable="bottom">
+                                        <field name="partner_id" invisible="0"/>
                                         <field name="related_partner_id"
-                                               domain="[('is_sales_channel', '=', True),('channel_type', '!=', 'company')]"
+                                               domain="[('is_sales_channel', '=', True),('channel_type', '!=', 'company'),
+                                                ('id', '!=', partner_id)]"
                                                options="{'no_create':True}"/>
                                         <field name="commission"/>
                                         <field name="start_date"/>
@@ -69,16 +71,16 @@
                                 </field>
                             </page>
                             <page string="Balance">
-                                <group string="Balance">
+                                <group string="">
                                     <group>
-                                        <field name="order_all" />
-                                        <field name="order_paid" />
-                                        <field name="order_pending" />
+                                        <field name="order_all"/>
+                                        <field name="order_paid"/>
+                                        <field name="order_pending"/>
                                     </group>
                                     <group>
-                                        <field name="balance_all" />
-                                        <field name="balance_paid" />
-                                        <field name="balance_pending" />
+                                        <field name="balance_all"/>
+                                        <field name="balance_paid"/>
+                                        <field name="balance_pending"/>
                                     </group>
                                 </group>
                             </page>
