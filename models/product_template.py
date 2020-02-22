@@ -13,6 +13,12 @@ class ProductTemplate(models.Model):
     e_commerce = fields.Boolean(string="E-Commerce",  )
     active = fields.Boolean('Active', default=True, help="Set active to false to hide the Brand without removing it.")
 
+    def name_get(self):
+        # Prefetch the fields used by the `name_get`, so `browse` doesn't fetch other fields
+        self.browse(self.ids).read(['name', 'sku_no'])
+        return [(template.id, '%s%s' % (template.sku_no and '[%s] ' % template.sku_no or '', template.name))
+                for template in self]
+
     def get_first_child(self, categ_id):
         if categ_id.parent_id.parent_id:
             self.get_first_child(categ_id.parent_id)
@@ -34,6 +40,6 @@ class ProductTemplate(models.Model):
             print(">>>>>>>>>>>>>>.", config)
             print(config.short_description ,"and",  category_id.name,"and", seq)
             if config.short_description and category_id.name and seq:
-                values['sku_no'] = config.short_description + category_id.name[:2] + str(seq).zfill(6)
+                values['sku_no'] = str(config.short_description + category_id.name[:2] + str(seq).zfill(6)).upper()
                 category_id.product_count += 1
         return super(ProductTemplate, self).create(values)

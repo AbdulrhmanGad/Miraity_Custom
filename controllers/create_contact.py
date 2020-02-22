@@ -49,8 +49,20 @@ class CreateContact(http.Controller):
                                 'email': kw['email'],
                                 'property_account_payable_id': account_receive_id.id,
                                 'property_account_receivable_id': account_payable_id,
+                                'company_type': 'person',
+                                'is_sales_channel': True,
                             }
                             new_contact = request.env['res.partner'].sudo().create(vals)
+                            print(kw["address_name"])
+                            print(">>>>>>>>>>>:", kw["address_phone"])
+                            if kw["address_name"] or kw["address_phone"]:
+                                print("<<<<<<<<<<<<<<<<<<<<<MMMMMMMMMMMMMMMMMMMMMM")
+                                request.env['res.partner'].sudo().create({
+                                    'parent_id':new_contact.id,
+                                    'name':kw["address_name"],
+                                    'phone':kw["address_phone"],
+                                })
+
                             args= {
                                 'success':True,
                                 'message':"Success",
@@ -72,8 +84,19 @@ class CreateContact(http.Controller):
                                 'phone': kw['phone'],
                                 'mobile': kw['mobile'],
                                 'email': kw['email'],
+                                'company_type': 'person',
+                                'is_sales_channel': True,
                             }
                             new_contact = request.env['res.partner'].sudo().create(vals)
+                            print(kw["address_name"])
+                            print(">>>>>>>>>>>:", kw["address_phone"])
+                            if kw["address_name"] or kw["address_phone"]:
+                                request.env['res.partner'].sudo().create({
+                                    'parent_id': new_contact.id,
+                                    'type': "delivery",
+                                    'name': kw["address_name"],
+                                    'phone': kw["address_phone"],
+                                })
                             args = {
                                 'success': True,
                                 'message': "Success",

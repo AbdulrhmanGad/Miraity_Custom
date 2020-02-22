@@ -3,44 +3,15 @@ from odoo import http
 from odoo.http import request
 
 
-class Warehouse(http.Controller):
+class Stock(http.Controller):
 
     # this search for customer name, phone, mobile, email
     # {"jsonrpc": "2.0","params":{"name":"1014527537"}}
     # {"jsonrpc": "2.0","params":{"token": "MIR123456789","name":"Abdulrhman"}}
-    @http.route('/create/stock', type='json', auth='user')
+    @http.route('/create/stock', type='json', auth='public')
     def create_stock(self, **kw):
-        # request.session.authenticate('odoo13', kw['login'], kw['password'])
-        # session = request.env['ir.http'].session_info()
-        # if session:
-        config = http.request.env['res.config.settings'].sudo().search([], order='id desc', limit=1)
-        session = request.env['ir.http'].session_info()
-        if session['uid'] and session['uid'] == config.wh_user_id.id:
-            if config.call_center_token and config.call_center_token == kw['token']:
-                purchase_id = http.request.env['purchase.order'].sudo().search([('name', '=', kw['po_number'])])
-                for pick in purchase_id.picking_ids:
-                    pick.partner_id = purchase_id.partner_id.id
-                    if pick.state not in ['done', 'cancel']:
-                        for move in pick.move_ids_without_package:
-                            for product in kw['products']:
-                                if product['sku_no'] == move.product_id.sku_no:
-                                    move.quantity_done = product['delivered_qty']
-                        pick.button_validate()
-
-                return {'success': True, 'message': "Success", 'code': '555'}
-            else:
-                args = {
-                    'success': False,
-                    'message': 'Failed Token error',
-                    'ID': None,
-                }
-        else:
-            args = {
-                'success': False,
-                'message': 'User error',
-                'code': '1000002',
-                'ID': None,
-            }
-
-        return args
-
+        print(">>>>>>>>>>>>>>>>", kw)
+        model = http.request.env['call.center.api']
+        response = model.create_stock(kw)
+        print(response)
+        return response

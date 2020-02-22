@@ -1,9 +1,15 @@
 <odoo>
-    <data>
+    <data noupdate="0">
         <record id="brand_sequence" model="ir.sequence">
             <field name="name">product.brand</field>
             <field name="code">product.brand</field>
             <field name="prefix">Br</field>
+            <field name="padding">4</field>
+        </record>
+        <record id="stock_location_sequence" model="ir.sequence">
+            <field name="name">stock.location</field>
+            <field name="code">stock.location</field>
+            <field name="prefix">loc</field>
             <field name="padding">4</field>
         </record>
     </data>
