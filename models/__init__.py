@@ -9,3 +9,4 @@ from . import purchase
 from . import sale_order
 from . import settings
 from . import stock_picking
+from . import send_mail

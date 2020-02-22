@@ -18,6 +18,8 @@ class ResPartner(models.Model):
                                           string="Related Partners", )
     products_related_ids = fields.One2many(comodel_name="partner.related.products", inverse_name="partner_id",
                                            string="Related Products", )
+    cheque_related_ids = fields.One2many(comodel_name="partner.related.cheque", inverse_name="partner_id",
+                                           string="Related Cheques", )
     channel_type = fields.Selection(string="Type", selection=[('1', 'Company'),
                                                               ('2', 'Celebrity'),
                                                               ('3', 'Makeup Artist'),
@@ -77,3 +79,11 @@ class RelatedProducts(models.Model):
     start_date = fields.Date(string="Start Date", required=True)
     end_date = fields.Date(string="End Date", )
     is_active = fields.Boolean(string="Active", default=True)
+
+
+class RelatedPartnerCheque(models.Model):
+    _name = 'partner.related.cheque'
+
+    partner_id = fields.Many2one(comodel_name="res.partner", )
+    value = fields.Float(string="Value", )
+    date = fields.Date(string="Date", )

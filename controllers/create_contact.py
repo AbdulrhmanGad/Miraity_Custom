@@ -54,9 +54,7 @@ class CreateContact(http.Controller):
                             }
                             new_contact = request.env['res.partner'].sudo().create(vals)
                             print(kw["address_name"])
-                            print(">>>>>>>>>>>:", kw["address_phone"])
                             if kw["address_name"] or kw["address_phone"]:
-                                print("<<<<<<<<<<<<<<<<<<<<<MMMMMMMMMMMMMMMMMMMMMM")
                                 request.env['res.partner'].sudo().create({
                                     'parent_id':new_contact.id,
                                     'name':kw["address_name"],

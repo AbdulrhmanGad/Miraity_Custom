@@ -5,6 +5,19 @@ from odoo.exceptions import ValidationError
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
+    state = fields.Selection([
+        ('draft', 'Quotation'),
+        ('sent', 'Quotation Sent'),
+        ('picking', 'Picking'),
+        ('packing', 'Packing'),
+        ('delivery', 'On Delivery'),
+        ('delivered', 'Delivered'),
+        ('sale', 'Sales Order'),
+        ('done', 'done'),  # Is was ('done', 'Locked'), Abdulrhman Changed IT
+        ('reschedule', 'Reschedule'),
+        ('cancel', 'Cancelled'),
+        ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
+
     is_sales_channel = fields.Boolean(related="partner_id.is_sales_channel")
     shipping_no = fields.Float(string="Shipping No",  )
 
