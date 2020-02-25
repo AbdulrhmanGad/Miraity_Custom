@@ -10,7 +10,7 @@ class AbstractWarehouseApi(models.AbstractModel):
     def create_transfer(self, kw):
         config = http.request.env['res.config.settings'].sudo().search([], order='id desc', limit=1)
         if config.wh_user_id.id:
-            print(">>session<<", request.env['ir.http'].session_info())
+            # print(">>session<<", request.env['ir.http'].session_info())
             if config.warehouse_token and config.warehouse_token == kw['token']:
                 location_id = http.request.env['stock.location'].search([('code', '=', kw['source'])])
                 location_dest_id = http.request.env['stock.location'].search([('code', '=', kw['destination'])])

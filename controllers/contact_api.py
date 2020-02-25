@@ -13,9 +13,10 @@ class AbstractContactApi(models.AbstractModel):
     #  	{"sku": "MIRSa000037","qty":"1"}
     #  ] }}
     def create_related_products(self, kw):
-        config = http.request.env['res.config.settings'].sudo().search([], order='id desc', limit=1)
-        if config.magento_user_id.id:
-            if config.magento_token and config.magento_token == kw['token']:
+        magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
+        magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
+        if magento_user_id.id:
+            if magento_token and magento_token == kw['token']:
                 partner_id = http.request.env['res.partner'].sudo().search([('code', '=', kw['code'])])
                 if partner_id:
                     if partner_id.is_sales_channel == True:
@@ -84,9 +85,11 @@ class AbstractContactApi(models.AbstractModel):
     # ]}}
 
     def create_related_partner(self, kw):
-        config = http.request.env['res.config.settings'].sudo().search([], order='id desc', limit=1)
-        if config.magento_user_id.id:
-            if config.magento_token and config.magento_token == kw['token']:
+
+        magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
+        magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
+        if magento_user_id.id:
+            if magento_token and magento_token == kw['token']:
                 main_partner_id = http.request.env['res.partner'].sudo().search([('code', '=', kw['code'])])
                 if main_partner_id:
                     if main_partner_id.is_sales_channel == True:
@@ -159,9 +162,10 @@ class AbstractContactApi(models.AbstractModel):
             }
 
     def create_cheques(self, kw):
-        config = http.request.env['res.config.settings'].sudo().search([], order='id desc', limit=1)
-        if config.magento_user_id.id:
-            if config.magento_token and config.magento_token == kw['token']:
+        magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
+        magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
+        if magento_user_id.id:
+            if magento_token and magento_token == kw['token']:
                 partner_id = http.request.env['res.partner'].sudo().search([('code', '=', kw['code'])])
                 if partner_id:
                     if partner_id.is_sales_channel == True:
