@@ -12,7 +12,9 @@ class AbstractMagentoApi(models.AbstractModel):
     #  ] }}
     def receive_sale_order(self, kw):
         config = http.request.env['res.config.settings'].sudo().search([], order='id desc', limit=1)
-        if config.magento_user_id.id:
+        print(http.request.env['res.config.settings'].sudo().search([], order='id desc',))
+        print(http.request.env['res.config.settings'].sudo().search([], order='id desc', limit=1).magento_user_id)
+        if config.magento_user_id:
             if config.magento_token and config.magento_token == kw['token']:
                 sale_id = http.request.env['sale.order'].sudo().search([('name', '=', kw['order'])])
                 if sale_id:
@@ -34,6 +36,12 @@ class AbstractMagentoApi(models.AbstractModel):
                                 for product in kw['products']:
                                     if line.product_id.sku_no == product['sku']:
                                         line.qty_done = product['qty']
+                                        return {
+                                            'success': False,
+                                            'message': 'Done',
+                                            'code': '307',
+                                            'ID': None,
+                                        }
 
                         else:
                             return {
@@ -72,14 +80,16 @@ class AbstractMagentoApi(models.AbstractModel):
     #delivered
     #sale
     def update_sale_order(self, kw):
-        config = http.request.env['res.config.settings'].sudo().search([], order='id desc', limit=1)
-        if config.magento_user_id.id:
-            if config.magento_token and config.magento_token == kw['token']:
+        magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
+        magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
+
+        if magento_user_id.id:
+            if magento_token and magento_token == kw['token']:
                 sale_id = http.request.env['sale.order'].sudo().search([('name', '=', kw['order'])])
                 if len(sale_id) != 0:
                     try:
                         sale_id.write({"state": kw['state']})
-                        return {'success': True, 'message': "Success, sale order state is %s" % kw['state'], }
+                        return {'success': True,'code': '308', 'message': "Success, sale order state is %s" % kw['state'], }
                     except:
                         return {
                             'success': False,

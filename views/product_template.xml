@@ -55,6 +55,18 @@
                     <field name='e_commerce'/>
                     <field name='active'/>
                 </xpath>
+
+                <xpath expr="//notebook" position="inside">
+                    <page name="review" string="Review">
+                        <field name="review_ids" readonly="1">
+                            <tree>
+                                <field name="partner_id" />
+                                <field name="review" />
+                                <field name="is_sale_channel" />
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
             </field>
         </record>
 

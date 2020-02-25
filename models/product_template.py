@@ -10,8 +10,9 @@ class ProductTemplate(models.Model):
     ready_test_qty = fields.Float(string="Sample", )
     magento_qty = fields.Float(string="Magento Qty", )
     magento_test_qty = fields.Float(string="Magento Sample", )
-    e_commerce = fields.Boolean(string="E-Commerce",  )
+    e_commerce = fields.Boolean(string="E-Commerce", )
     active = fields.Boolean('Active', default=True, help="Set active to false to hide the Brand without removing it.")
+    review_ids = fields.One2many(comodel_name="product.review", inverse_name="product_id", string="Product Review", )
 
     def name_get(self):
         # Prefetch the fields used by the `name_get`, so `browse` doesn't fetch other fields
@@ -33,13 +34,25 @@ class ProductTemplate(models.Model):
             category_id = self.get_first_child(categ_id.parent_id)
         else:
             category_id = categ_id
-        print(">>>>>>>category_id>>>>>>>.", category_id)
         if category_id:
             seq = category_id.product_count
-            config = self.env['res.config.settings'].search([], order='id desc', limit=1)
-            print(">>>>>>>>>>>>>>.", config)
-            print(config.short_description ,"and",  category_id.name,"and", seq)
-            if config.short_description and category_id.name and seq:
-                values['sku_no'] = str(config.short_description + category_id.name[:2] + str(seq).zfill(6)).upper()
+            short_description = self.env['ir.config_parameter'].sudo().get_param('base_setup.short_description')
+            if short_description and category_id.name and seq:
+                values['sku_no'] = str(short_description + category_id.name[:2] + str(seq).zfill(6)).upper()
                 category_id.product_count += 1
         return super(ProductTemplate, self).create(values)
+
+
+class SaleChannelReview(models.Model):
+    _name = 'product.review'
+
+    product_id = fields.Many2one(comodel_name="product.template",)
+    partner_id = fields.Many2one(comodel_name="res.partner", required=True)
+    is_sale_channel = fields.Boolean(string="Sale Channel?", )
+    review = fields.Selection(string="Review", selection=[
+        ('1', '1 Star'),
+        ('2', '2 Star'),
+        ('3', '3 Star'),
+        ('4', '4 Star'),
+        ('5', '5 Star'),
+    ], required=True, )

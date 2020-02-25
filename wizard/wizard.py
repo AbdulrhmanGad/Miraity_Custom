@@ -17,17 +17,16 @@ class MissingProductSku(models.TransientModel):
 
     def action_apply(self):
         for rec in self:
-            config = self.env['res.config.settings'].search([], order='id desc', limit=1)
+            short_description = self.env['ir.config_parameter'].sudo().get_param('base_setup.short_description')
             product_ids = self.env['product.template'].search([('sku_no', '=', False)])
             for product in product_ids:
                 category_id = product.get_first_child(product.categ_id.parent_id)
                 if category_id:
                     seq = category_id.product_count
-                    print(config.short_description, ">>>",  category_id.name[:2] ,">>>>",  str(seq).zfill(6))
-                    product.sku_no = config.short_description + category_id.name[:2] + str(seq).zfill(6)
+                    product.sku_no = short_description.upper() + str(category_id.name[:2]) + str(seq).zfill(6)
                     category_id.product_count += 1
             if rec.to_magento:
-                print("TO MAGENTO")
+                pass
         return {'type': 'ir.actions.act_window_close'}
 
 

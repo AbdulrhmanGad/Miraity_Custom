@@ -8,9 +8,10 @@ class AbstractCallCenterApi(models.AbstractModel):
     _name = 'call.center.api'
 
     def search_customer(self, kw):
-        config = http.request.env['res.config.settings'].sudo().search([], order='id desc', limit=1)
-        if config.call_center_user_id.id:
-            if config.call_center_token and config.call_center_token == kw['token']:
+        call_center_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.call_center_user_id')
+        call_center_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.call_center_token')
+        if call_center_user_id.id:
+            if call_center_token and call_center_token == kw['token']:
                 customer_ids = http.request.env['res.partner'].search(['|', '|', '|', ('name', 'ilike', kw['name']),
                                                                        ('phone', 'ilike', kw['name']),
                                                                        ('mobile', 'ilike', kw['name']),
@@ -36,9 +37,11 @@ class AbstractCallCenterApi(models.AbstractModel):
             }
 
     def search_order(self, kw):
-        config = http.request.env['res.config.settings'].sudo().search([], order='id desc', limit=1)
-        if config.call_center_user_id.id:
-            if config.call_center_token and config.call_center_token == kw['token']:
+
+        call_center_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.call_center_user_id')
+        call_center_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.call_center_token')
+        if call_center_user_id.id:
+            if call_center_token and call_center_token == kw['token']:
                 customer_ids = http.request.env['res.partner'].search(
                     ['|', '|', '|', '|', ('name', 'ilike', kw['name']),
                      ('phone', 'ilike', kw['name']),
@@ -82,9 +85,11 @@ class AbstractCallCenterApi(models.AbstractModel):
             }
 
     def search_order_products(self, kw):
-        config = http.request.env['res.config.settings'].search([], order='id desc', limit=1)
-        if config.call_center_user_id.id:
-            if config.call_center_token and config.call_center_token == kw['token']:
+
+        call_center_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.call_center_user_id')
+        call_center_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.call_center_token')
+        if call_center_user_id.id:
+            if call_center_token and call_center_token == kw['token']:
                 sale_id = http.request.env['sale.order'].search([('name', '=', kw['name'])])
                 order = []
                 for sale in sale_id.order_line:
@@ -116,10 +121,12 @@ class AbstractCallCenterApi(models.AbstractModel):
             }
 
     def create_ticket(self, kw):
-        config = http.request.env['res.config.settings'].search([], order='id desc', limit=1)
-        if config.call_center_user_id:
-            if config.helpdesk_team_id:
-                if config.call_center_token and config.call_center_token == kw['token']:
+        call_center_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.call_center_user_id')
+        call_center_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.call_center_token')
+        helpdesk_team_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.helpdesk_team_id')
+        if call_center_user_id:
+            if helpdesk_team_id:
+                if call_center_token and call_center_token == kw['token']:
                     partner_id = http.request.env['res.partner'].search([('code', '=', kw['customer_code'])])
                     sale_id = http.request.env['sale.order'].search([('name', '=', kw['sale_order'])])
                     product_id = http.request.env['product.product'].search([('sku_no', '=', kw['product_sku'])],
@@ -129,7 +136,7 @@ class AbstractCallCenterApi(models.AbstractModel):
                             'partner_id': partner_id.id,
                             'sale_order_id': sale_id.id,
                             'product_id': product_id.id,
-                            'team_id': config.helpdesk_team_id.id,
+                            'team_id': helpdesk_team_id.id,
                             'priority': kw['priority'],
                             'name': kw['name'],
                         })
@@ -160,10 +167,10 @@ class AbstractCallCenterApi(models.AbstractModel):
         # request.session.authenticate('odoo13', kw['login'], kw['password'])
         # session = request.env['ir.http'].session_info()
         # if session:
-        config = http.request.env['res.config.settings'].sudo().search([], order='id desc', limit=1)
-        session = request.env['ir.http'].session_info()
-        if config.wh_user_id.id:
-            if config.call_center_token and config.call_center_token == kw['token']:
+        wh_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.wh_user_id')
+        call_center_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.call_center_token')
+        if wh_user_id.id:
+            if call_center_token and call_center_token == kw['token']:
                 purchase_id = http.request.env['purchase.order'].sudo().search([('name', '=', kw['po_number'])])
                 for pick in purchase_id.picking_ids:
                     pick.partner_id = purchase_id.partner_id.id

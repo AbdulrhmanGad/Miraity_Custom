@@ -3,3 +3,4 @@ access_product_brand,access_product_brand,model_product_brand,stock.group_stock_
 access_partner_related_partners,partner_related_partners,model_partner_related_partners,,1,1,1,1
 access_partner_related_products,partner_related_products,model_partner_related_products,,1,1,1,1
 access_partner_related_cheque,partner_related_cheque,model_partner_related_cheque,,1,1,1,1
+access_product_review,product_review,model_product_review,,1,1,1,1
