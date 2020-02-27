@@ -15,7 +15,7 @@ class AbstractContactApi(models.AbstractModel):
     def create_related_products(self, kw):
         magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
         magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
-        if magento_user_id.id:
+        if magento_user_id:
             if magento_token and magento_token == kw['token']:
                 partner_id = http.request.env['res.partner'].sudo().search([('code', '=', kw['code'])])
                 if partner_id:
@@ -88,7 +88,7 @@ class AbstractContactApi(models.AbstractModel):
 
         magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
         magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
-        if magento_user_id.id:
+        if magento_user_id:
             if magento_token and magento_token == kw['token']:
                 main_partner_id = http.request.env['res.partner'].sudo().search([('code', '=', kw['code'])])
                 if main_partner_id:
@@ -160,33 +160,46 @@ class AbstractContactApi(models.AbstractModel):
                 'code': '301',
                 'ID': None,
             }
-
+    #   {"jsonrpc": "2.0","params": {"token": "ceaab57d23fcc80144e3b143be1112ce3d159ba2", "code": "CT0002", "value": "5555"}}
     def create_cheques(self, kw):
         magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
         magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
-        if magento_user_id.id:
+        if magento_user_id:
             if magento_token and magento_token == kw['token']:
-                partner_id = http.request.env['res.partner'].sudo().search([('code', '=', kw['code'])])
+                partner_id = http.request.env['res.partner'].sudo().search([('code', '=', kw['customer'])])
                 if partner_id:
                     if partner_id.is_sales_channel == True:
-                        try:
+                        # try:
+                            print(">>>>>>>>>>>>>", type(kw['value']))
                             float(kw['value'])
+                            print(">>>>>>>>>>>>>", type(kw['value']))
+                            # users = http.request.env.ref('account.group_account_manager')
                             http.request.env['partner.related.cheque'].sudo().create({
                                 'partner_id': partner_id.id,
-                                'value': kw['value'],
+                                'value': float(kw['value']),
                                 'date': date.today(),
                             })
+                            users = request.env['res.users'].sudo().search([])
+                            for user in users:
+                                if user.has_group('account.group_account_manager'):
+                                    print(user.partner_id.id)
+                                    print(user.partner_id.name)
+                                    http.request.env['mail.message'].sudo().create({
+                                        'partner_ids': user.partner_id.id,
+                                        'message_type': "notification",
+                                        'subject': "Contact Cheque Created",
+                                    })
                             return {
-                                'success': False,
+                                'success': True,
                                 'message': 'Cheque Added',
                             }
-                        except:
-                            return {
-                                'success': False,
-                                'message': 'Cheque Value Must be Numbers and  Positive',
-                                'code': '308',
-                                'ID': None,
-                            }
+                        # except:
+                        #     return {
+                        #         'success': False,
+                        #         'message': 'Cheque Value Must be Numbers and  Positive',
+                        #         'code': '308',
+                        #         'ID': None,
+                        #     }
                     else:
                         return {
                             'success': False,

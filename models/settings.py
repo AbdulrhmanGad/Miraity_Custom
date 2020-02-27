@@ -33,6 +33,8 @@ class ResConfigSettings(models.TransientModel):
     magento_token = fields.Char(string="Magento Token Key", config_parameter='base_setup.magento_token', )
     magento_token_len = fields.Integer(string="WH Token Length",)
     magento_user_id = fields.Many2one(comodel_name="res.users", config_parameter='base_setup.magento_user_id', )
+    magento_helpdesk_team_id = fields.Many2one(comodel_name="helpdesk.team", config_parameter='base_setup.magento_helpdesk_team_id', )
+
 
     short_description = fields.Char(string="Short Description", config_parameter='base_setup.short_description', )
 
