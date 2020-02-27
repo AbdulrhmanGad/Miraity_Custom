@@ -1,0 +1,30 @@
+<odoo>
+    <data>
+        <!-- Inherit Form View to Modify it -->
+        <record id="view_inherit_helpdek_form" model="ir.ui.view">
+            <field name="name">view.inherit.help.desk.form</field>
+            <field name="model">helpdesk.ticket</field>
+            <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="code" readonly="1"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="view_helpdek_desk_search" model="ir.ui.view">
+            <field name="name">helpdek</field>
+            <field name="model">helpdesk.ticket</field>
+            <field name="inherit_id" ref="helpdesk.helpdesk_tickets_view_search"/>
+            <field name="arch" type="xml">
+                <field name="name" position="after">
+                    <field name="code"/>
+                    <filter string="Code" name="group Code" domain="[]"
+                            context="{'group_by' : 'code'}"/>
+                    <separator/>
+                </field>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

@@ -14,6 +14,7 @@
         'data/sequence.xml',
         'views/company.xml',
         'views/contacts.xml',
+        'views/helpdesk.xml',
         'views/product_template.xml',
         'views/logistics_warehouse.xml',
         'views/product_category.xml',

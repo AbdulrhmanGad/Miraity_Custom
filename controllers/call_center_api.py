@@ -10,7 +10,7 @@ class AbstractCallCenterApi(models.AbstractModel):
     def search_customer(self, kw):
         call_center_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.call_center_user_id')
         call_center_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.call_center_token')
-        if call_center_user_id.id:
+        if call_center_user_id:
             if call_center_token and call_center_token == kw['token']:
                 customer_ids = http.request.env['res.partner'].search(['|', '|', '|', ('name', 'ilike', kw['name']),
                                                                        ('phone', 'ilike', kw['name']),
@@ -40,7 +40,7 @@ class AbstractCallCenterApi(models.AbstractModel):
 
         call_center_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.call_center_user_id')
         call_center_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.call_center_token')
-        if call_center_user_id.id:
+        if call_center_user_id:
             if call_center_token and call_center_token == kw['token']:
                 customer_ids = http.request.env['res.partner'].search(
                     ['|', '|', '|', '|', ('name', 'ilike', kw['name']),
@@ -88,7 +88,7 @@ class AbstractCallCenterApi(models.AbstractModel):
 
         call_center_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.call_center_user_id')
         call_center_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.call_center_token')
-        if call_center_user_id.id:
+        if call_center_user_id:
             if call_center_token and call_center_token == kw['token']:
                 sale_id = http.request.env['sale.order'].search([('name', '=', kw['name'])])
                 order = []
@@ -136,7 +136,7 @@ class AbstractCallCenterApi(models.AbstractModel):
                             'partner_id': partner_id.id,
                             'sale_order_id': sale_id.id,
                             'product_id': product_id.id,
-                            'team_id': helpdesk_team_id.id,
+                            'team_id': helpdesk_team_id,
                             'priority': kw['priority'],
                             'name': kw['name'],
                         })
@@ -169,7 +169,7 @@ class AbstractCallCenterApi(models.AbstractModel):
         # if session:
         wh_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.wh_user_id')
         call_center_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.call_center_token')
-        if wh_user_id.id:
+        if wh_user_id:
             if call_center_token and call_center_token == kw['token']:
                 purchase_id = http.request.env['purchase.order'].sudo().search([('name', '=', kw['po_number'])])
                 for pick in purchase_id.picking_ids:

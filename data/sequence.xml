@@ -12,5 +12,11 @@
             <field name="prefix">loc</field>
             <field name="padding">4</field>
         </record>
+        <record id="helpdesk_tickt_sequence" model="ir.sequence">
+            <field name="name">helpdesk.ticket</field>
+            <field name="code">helpdesk.ticket</field>
+            <field name="prefix">TKT</field>
+            <field name="padding">4</field>
+        </record>
     </data>
 </odoo>

@@ -110,6 +110,13 @@
                                     </button>
                                     <field name='magento_token' readonly="1"/>
                                 </div>
+                                <div class="o_setting_right_pane">
+                                    <span class='o_form_label'>
+                                        HelpDesk Team
+                                    </span>
+                                    <field name='magento_helpdesk_team_id'/>
+                                </div>
+
 
                             </div>
                             <div class="col-6 col-lg-6 o_setting_box">

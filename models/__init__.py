@@ -3,6 +3,7 @@
 from . import company
 from . import product_brand
 from . import contacts
+from . import helpdesk
 from . import product_category
 from . import product_template
 from . import purchase
