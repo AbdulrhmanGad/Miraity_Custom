@@ -20,11 +20,14 @@ class MissingProductSku(models.TransientModel):
             short_description = self.env['ir.config_parameter'].sudo().get_param('base_setup.short_description')
             product_ids = self.env['product.template'].search([('sku_no', '=', False)])
             for product in product_ids:
-                category_id = product.get_first_child(product.categ_id.parent_id)
-                if category_id:
-                    seq = category_id.product_count
-                    product.sku_no = short_description.upper() + str(category_id.name[:2]) + str(seq).zfill(6)
-                    category_id.product_count += 1
+                if product.categ_id.parent_id  and  product.seller_ids[0] :
+                    seq = product.categ_id.product_count
+                    product.sku_no = short_description.upper() +\
+                                     str(product.categ_id.name[:1]) +\
+                                     str(product.categ_id.parent_id.name[:1]) +\
+                                     product.seller_ids[0].name.code2 + \
+                                     str(seq).zfill(4)
+                    product.categ_id.product_count += 1
             if rec.to_magento:
                 pass
         return {'type': 'ir.actions.act_window_close'}

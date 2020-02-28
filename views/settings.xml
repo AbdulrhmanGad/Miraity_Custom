@@ -7,8 +7,8 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//div[hasclass('settings')]" position="inside">
-                <div class="app_settings_block" data-string="Miraity Settings" string="Miraity Settings"
-                     data-key="miraity_settings">
+                <div class="app_settings_block" data-string="Miraity Settings" string="Miraity"
+                     data-key="Miraity_Custom">
 
                     <div id="contacts_settings">
                         <h2>Contacts Settings</h2>
@@ -164,9 +164,10 @@
         <field name="name">Channel</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">res.config.settings</field>
+        <field name="view_id" ref="res_config_settings_view_form"/>
         <field name="view_mode">form</field>
         <field name="target">inline</field>
-        <field name="context">{'module' : 'miraity_settings'}</field>
+        <field name="context">{'module' : 'Miraity_Custom'}</field>
     </record>
 
 

@@ -6,6 +6,7 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     code = fields.Char(string="Code", readonly=True)
+    code2 = fields.Char(string="Code2", readonly=True)
     is_sales_channel = fields.Boolean(string="Sales Channel", )
     is_customer = fields.Boolean(string="Customer", )
     is_vendor = fields.Boolean(string="vendor", )
@@ -19,7 +20,7 @@ class ResPartner(models.Model):
     products_related_ids = fields.One2many(comodel_name="partner.related.products", inverse_name="partner_id",
                                            string="Related Products", )
     cheque_related_ids = fields.One2many(comodel_name="partner.related.cheque", inverse_name="partner_id",
-                                           string="Related Cheques", )
+                                           string="Related Cheques", track_visibility='always')
     channel_type = fields.Selection(string="Type", selection=[('1', 'Company'),
                                                               ('2', 'Celebrity'),
                                                               ('3', 'Makeup Artist'),
@@ -43,8 +44,10 @@ class ResPartner(models.Model):
     def create(self, values):
         if self.env.user.company_id:
             sequence = self.env.user.company_id.partner_count
+            code2 = self.env['ir.sequence'].next_by_code('res.partner') or '/'
             seq = sequence + 1
             values['code'] = 'CT' + str(seq).zfill(4)
+            values['code2'] = str(code2)
             self.env.user.company_id.partner_count += 1
         return super(ResPartner, self).create(values)
 
@@ -84,6 +87,6 @@ class RelatedProducts(models.Model):
 class RelatedPartnerCheque(models.Model):
     _name = 'partner.related.cheque'
 
-    partner_id = fields.Many2one(comodel_name="res.partner", )
-    value = fields.Float(string="Value", )
-    date = fields.Date(string="Date", )
+    partner_id = fields.Many2one(comodel_name="res.partner", track_visibility='onchange')
+    value = fields.Float(string="Value", track_visibility='onchange' )
+    date = fields.Date(string="Date" , track_visibility='onchange' )
