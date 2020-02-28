@@ -26,6 +26,7 @@
         'wizard/wizard.xml',
         'wizard/purchase.xml',
     ],
+    'images': ['static/description/icon.png'],
     'installable': True,
     'auto_install': False,
     'application': True,

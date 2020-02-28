@@ -36,7 +36,7 @@ class ResConfigSettings(models.TransientModel):
     magento_helpdesk_team_id = fields.Many2one(comodel_name="helpdesk.team", config_parameter='base_setup.magento_helpdesk_team_id', )
 
 
-    short_description = fields.Char(string="Short Description", config_parameter='base_setup.short_description', )
+    short_description = fields.Char(string="Short Description", size=1, config_parameter='base_setup.short_description', )
 
     def generate_call_center_token(self):
             self.env['ir.config_parameter'].sudo().set_param('base_setup.call_center_token', secrets.token_hex(20))

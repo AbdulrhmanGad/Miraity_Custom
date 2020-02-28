@@ -182,13 +182,20 @@ class AbstractContactApi(models.AbstractModel):
                             users = request.env['res.users'].sudo().search([])
                             for user in users:
                                 if user.has_group('account.group_account_manager'):
-                                    print(user.partner_id.id)
-                                    print(user.partner_id.name)
-                                    http.request.env['mail.message'].sudo().create({
-                                        'partner_ids': user.partner_id.id,
-                                        'message_type': "notification",
-                                        'subject': "Contact Cheque Created",
-                                    })
+                                    pass
+                                    # http.request.env['mail.message'].sudo().create({
+                                    #     'partner_ids': user.partner_id.id,
+                                    #     'message_type': "notification",
+                                    #     'subject': "Contact Cheque Created",
+                                    # })
+
+                                    # http.request.env['mail.message'].sudo().with_context(
+                                    #     mail_create_nosubscribe=True).create({'body': "Contact Cheque Created",
+                                    #                                           'message_type': 'notification',
+                                    #                                           'partner_ids': user.partner_id.id,
+                                    #                                           'subtype': 'mt_note'})
+
+
                             return {
                                 'success': True,
                                 'message': 'Cheque Added',
