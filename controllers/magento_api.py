@@ -14,7 +14,8 @@ class AbstractMagentoApi(models.AbstractModel):
     def create_sale_order(self, kw):
         magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
         magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
-        auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
+        # auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
+        auth_user = http.request.env['authenticate.api'].authenticate('miraitytest2', 'demo', 'demo')
         if int(magento_user_id) == int(auth_user):
             if magento_token and magento_token == kw['token']:
                 partner_id = http.request.env['res.partner'].sudo().search([('code', '=', kw['customer'])])
@@ -158,7 +159,8 @@ class AbstractMagentoApi(models.AbstractModel):
     def update_sale_order(self, kw):
         magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
         magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
-        auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
+        # auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
+        auth_user = http.request.env['authenticate.api'].authenticate('miraitytest2', 'demo', 'demo')
         if int(magento_user_id) == int(auth_user):
             if magento_token and magento_token == kw['token']:
                 sale_id = http.request.env['sale.order'].sudo().search([('name', '=', kw['order'])])
@@ -206,7 +208,8 @@ class AbstractMagentoApi(models.AbstractModel):
         magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
         magento_helpdesk_team_id = http.request.env['ir.config_parameter'].sudo().get_param(
             'base_setup.magento_helpdesk_team_id')
-        auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
+        # auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
+        auth_user = http.request.env['authenticate.api'].authenticate('miraitytest2', 'demo', 'demo')
         if int(magento_user_id) == int(auth_user):
             if magento_helpdesk_team_id:
                 if magento_token and magento_token == kw['token']:
@@ -260,7 +263,8 @@ class AbstractMagentoApi(models.AbstractModel):
 
     #  {"jsonrpc": "2.0","params": {"name": "Mohammmed API", "phone": "00244126090", "mobile": "01014527537", "email": "aaa@gmail.com"}}
     def create_contact(self, kw):
-            auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
+            # auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
+            auth_user = http.request.env['authenticate.api'].authenticate('miraitytest2', 'demo', 'demo')
             magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
             magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
             is_account_prefix = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.is_account_prefix')
