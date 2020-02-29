@@ -14,6 +14,7 @@ class SaleOrder(models.Model):
         ('delivered', 'Delivered'),
         ('sale', 'Sales Order'),
         ('done', 'done'),  # Is was ('done', 'Locked'), Abdulrhman Changed IT
+        ('cancel_request', 'Cancel Request'),
         ('reschedule', 'Reschedule'),
         ('cancel', 'Cancelled'),
         ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')

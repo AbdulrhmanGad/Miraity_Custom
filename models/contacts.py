@@ -20,7 +20,7 @@ class ResPartner(models.Model):
     products_related_ids = fields.One2many(comodel_name="partner.related.products", inverse_name="partner_id",
                                            string="Related Products", )
     cheque_related_ids = fields.One2many(comodel_name="partner.related.cheque", inverse_name="partner_id",
-                                           string="Related Cheques", track_visibility='always')
+                                         string="Related Cheques", track_visibility='always')
     channel_type = fields.Selection(string="Type", selection=[('1', 'Company'),
                                                               ('2', 'Celebrity'),
                                                               ('3', 'Makeup Artist'),
@@ -50,6 +50,17 @@ class ResPartner(models.Model):
             values['code2'] = str(code2)
             self.env.user.company_id.partner_count += 1
         return super(ResPartner, self).create(values)
+
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        super(ResPartner, self).name_search(name)
+        args = args or []
+        domain = []
+        if name:
+            domain = ['|', '|', '|', '|', ('mobile', '=ilike', name), ('email', '=ilike', name),
+                      ('name', '=ilike', name), ('phone', operator, name), ('code', operator, name)]
+        results = self.search(domain + args, limit=limit)
+        return results.name_get()
 
 
 class RelatedPartner(models.Model):
@@ -88,5 +99,5 @@ class RelatedPartnerCheque(models.Model):
     _name = 'partner.related.cheque'
 
     partner_id = fields.Many2one(comodel_name="res.partner", track_visibility='onchange')
-    value = fields.Float(string="Value", track_visibility='onchange' )
-    date = fields.Date(string="Date" , track_visibility='onchange' )
+    value = fields.Float(string="Value", track_visibility='onchange')
+    date = fields.Date(string="Date", track_visibility='onchange')
