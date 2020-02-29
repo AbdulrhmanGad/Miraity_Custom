@@ -35,3 +35,9 @@ class Magento(http.Controller):
         model = http.request.env['magento.api']
         response = model.create_contact(kw)
         return response
+
+    @http.route('/test', type='json', auth='public')
+    def update_sale_order(self, **kw):
+        model = http.request.env['magento.api']
+        response = model.test(kw)
+        return response

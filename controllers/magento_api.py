@@ -382,3 +382,12 @@ class AbstractMagentoApi(models.AbstractModel):
                 }
             http.request.env['authenticate.api'].logout()
             return args
+    def test(self, kw):
+
+        args = {
+            'success': False,
+            'message': 'testsssssssssssss',
+            'code': '1000002',
+            'ID': None,
+        }
+        return args
