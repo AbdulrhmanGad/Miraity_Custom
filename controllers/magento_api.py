@@ -78,7 +78,8 @@ class AbstractMagentoApi(models.AbstractModel):
     def receive_sale_order(self, kw):
         magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
         magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
-        auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
+        # auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo') # Localhost
+        auth_user = http.request.env['authenticate.api'].authenticate('miraitytest2', 'demo', 'demo') # test server
         if int(magento_user_id) == int(auth_user):
             if magento_token and magento_token == kw['token']:
                 sale_id = http.request.env['sale.order'].sudo().search([('name', '=', kw['order'])])
