@@ -77,76 +77,84 @@ class AbstractMagentoApi(models.AbstractModel):
     #  ] }}
 
     def receive_sale_order(self, kw):
-        magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
-        magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
-        # auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo') # Localhost
-        auth_user = http.request.env['authenticate.api'].authenticate('miraitytest2', 'demo', 'demo') # test server
-        if int(magento_user_id) == int(auth_user):
-            if magento_token and magento_token == kw['token']:
-                sale_id = http.request.env['sale.order'].sudo().search([('name', '=', kw['order'])])
-                if sale_id:
-                    sale_id.action_confirm()
-                    for pick in sale_id.picking_ids:
-                        if len(kw['products']) != 0:
-                            products = []
-                            for line in pick.move_line_ids_without_package:
-                                products.append(line.product_id.sku_no)
-                                for product in kw['products']:
-                                    if product['sku'] not in products:
-                                        http.request.env['authenticate.api'].logout()
-                                        return {
-                                            'success': False,
-                                            'message': 'One or More products Not Founded !!',
-                                            'code': '305',
-                                            'ID': None,
-                                        }
-                            for line in pick.move_line_ids_without_package:
-                                for product in kw['products']:
-                                    if line.product_id.sku_no == product['sku']:
-                                        line.qty_done = product['qty']
-                            pick.button_validate()
-                            if pick.state != 'done':
-                                backorder_ids = http.request.env['stock.backorder.confirmation'].sudo().search([('pick_ids', '=', pick.id)])
-                                for backorder in backorder_ids:
-                                    backorder.process_cancel_backorder()
-                            http.request.env['authenticate.api'].logout()
-                            return {
-                                'success': True,
-                                'message': 'Done',
-                                'code': '307',
-                            }
+        try:
 
-                        else:
-                            http.request.env['authenticate.api'].logout()
-                            return {
-                                'success': False,
-                                'message': 'NO Products !!',
-                                'code': '304',
-                                'ID': None,
-                            }
+            magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
+            magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
+            # auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo') # Localhost
+            auth_user = http.request.env['authenticate.api'].authenticate('miraitytest2', 'demo', 'demo') # test server
+            if int(magento_user_id) == int(auth_user):
+                if magento_token and magento_token == kw['token']:
+                    sale_id = http.request.env['sale.order'].sudo().search([('name', '=', kw['order'])])
+                    if sale_id:
+                        sale_id.action_confirm()
+                        for pick in sale_id.picking_ids:
+                            if len(kw['products']) != 0:
+                                products = []
+                                for line in pick.move_line_ids_without_package:
+                                    products.append(line.product_id.sku_no)
+                                    for product in kw['products']:
+                                        if product['sku'] not in products:
+                                            http.request.env['authenticate.api'].logout()
+                                            return {
+                                                'success': False,
+                                                'message': 'One or More products Not Founded !!',
+                                                'code': '305',
+                                                'ID': None,
+                                            }
+                                for line in pick.move_line_ids_without_package:
+                                    for product in kw['products']:
+                                        if line.product_id.sku_no == product['sku']:
+                                            line.qty_done = product['qty']
+                                pick.button_validate()
+                                if pick.state != 'done':
+                                    backorder_ids = http.request.env['stock.backorder.confirmation'].sudo().search([('pick_ids', '=', pick.id)])
+                                    for backorder in backorder_ids:
+                                        backorder.process_cancel_backorder()
+                                http.request.env['authenticate.api'].logout()
+                                return {
+                                    'success': True,
+                                    'message': 'Done',
+                                    'code': '307',
+                                }
+
+                            else:
+                                http.request.env['authenticate.api'].logout()
+                                return {
+                                    'success': False,
+                                    'message': 'NO Products !!',
+                                    'code': '304',
+                                    'ID': None,
+                                }
+                    else:
+                        http.request.env['authenticate.api'].logout()
+                        return {
+                            'success': False,
+                            'message': 'No Sale Order With this Code',
+                            'code': '303',
+                            'ID': None,
+                        }
+
+                    # return {'success': True, 'message': "Success", 'code': '555'}
                 else:
                     http.request.env['authenticate.api'].logout()
                     return {
                         'success': False,
-                        'message': 'No Sale Order With this Code',
-                        'code': '303',
+                        'message': 'Invalid Token',
+                        'code': '302',
                         'ID': None,
                     }
-
-                # return {'success': True, 'message': "Success", 'code': '555'}
             else:
-                http.request.env['authenticate.api'].logout()
                 return {
                     'success': False,
-                    'message': 'Invalid Token',
-                    'code': '302',
+                    'message': 'Please, Contact Administrator to Allow Magento Setting User',
+                    'code': '301',
                     'ID': None,
                 }
-        else:
-            http.request.env['authenticate.api'].logout()
+        except:
             return {
                 'success': False,
-                'message': 'Please, Contact Administrator to Allow Magento Setting User',
+                'message': 'Pffffffffffffff',
                 'code': '301',
                 'ID': None,
             }
