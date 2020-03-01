@@ -9,8 +9,11 @@
 
                 <xpath expr="//field[@name='client_order_ref']" position="after">
                     <field name="is_sales_channel" invisible="1"/>
-                    <field name="warehouse_id" readonly="1"/>
-                    <field name="shipping_no" />
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="miraity_type"/>
+                    <field name="ticket_id"/>
+                    <field name="shipping_no"/>
                 </xpath>
 
             </field>

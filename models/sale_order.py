@@ -18,12 +18,13 @@ class SaleOrder(models.Model):
         ('reschedule', 'Reschedule'),
         ('cancel', 'Cancelled'),
         ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
-
+    miraity_type = fields.Selection(string="Miraity Type", selection=[('celebrity', 'Celebrity'),
+                                                                      ('gift', 'Gift'),
+                                                                      ])
     is_sales_channel = fields.Boolean(related="partner_id.is_sales_channel")
-    shipping_no = fields.Float(string="Shipping No",  )
-
+    shipping_no = fields.Char(string="Shipping No", )
+    ticket_id = fields.Many2one(comodel_name="helpdesk.ticket", string="Ticket" )
     company_id = fields.Many2one('res.company', string='Company', readonly=True, default=lambda self: self.env.user.company_id)
-    warehouse_id = fields.Many2one(comodel_name="stock.warehouse", string="Test Warehouse")
 
     def action_confirm(self):
         res = super(SaleOrder, self).action_confirm()
