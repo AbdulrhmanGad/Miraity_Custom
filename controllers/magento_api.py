@@ -167,6 +167,8 @@ class AbstractMagentoApi(models.AbstractModel):
     def update_sale_order(self, kw):
         magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
         magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
+        magento_helpdesk_team_id = http.request.env['ir.config_parameter'].sudo().get_param(
+            'base_setup.magento_helpdesk_team_id')
         # auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
         auth_user = http.request.env['authenticate.api'].authenticate('miraitytest2', 'demo', 'demo')
         if int(magento_user_id) == int(auth_user):
@@ -176,6 +178,16 @@ class AbstractMagentoApi(models.AbstractModel):
                     try:
                         sale_id.write({"state": kw['state']})
                         http.request.env['authenticate.api'].logout()
+                        ##################### Ticket Create if state cancelled ###############################
+                        if int(kw['state']) == 6:
+                            ticket = http.request.env['helpdesk.ticket'].sudo().create({
+                                'partner_id': sale_id.partner_id.id,
+                                'sale_order_id': sale_id.id,
+                                'team_id': int(magento_helpdesk_team_id),
+                                'priority': 3,
+                                'name': "Cancelled Ordered",
+                            })
+                        ####################################################
                         return {'success': True, 'code': '308',
                                 'message': "Success, sale order state is %s" % kw['state'], }
                     except:

@@ -24,7 +24,10 @@
             <field name="inherit_id" ref="helpdesk_stock.helpdesk_ticket_view_form_inherit_helpdesk_stock"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='product_id']" position="attributes">
-                    <attribute name="options">{'no_create': True}</attribute>
+<!--                    <attribute name="options">{'no_create': True}</attribute>-->
+                </xpath>
+                <xpath expr="//field[@name='product_id']" position="after">
+                    <field name="sale_order_gift_id" readonly="True" />
                 </xpath>
             </field>
         </record>
@@ -49,7 +52,58 @@
             <field name="inherit_id" ref="helpdesk.helpdesk_ticket_type_view_tree"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='name']" position="after">
-                   <field name="code" />
+                    <field name="code"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <!-- Inherit Form View to Modify it -->
+        <record id="miraity_helpdesk_ticket_view_form_inherit_helpdesk_invoicing_inherit" model="ir.ui.view">
+            <field name="name">view.inherit.helpdesk.form</field>
+            <field name="model">helpdesk.ticket</field>
+            <field name="inherit_id" ref="helpdesk_account.helpdesk_ticket_view_form_inherit_helpdesk_invoicing"/>
+            <field name="arch" type="xml">
+                <field name="stage_id" position="before">
+                    <field name="gift_created" invisible="1"/>
+                    <field name="use_replacement" invisible="1"/>
+                    <field name="use_gift" invisible="1"/>
+                    <button name="create_gift" type="object" string="Gift" groups="account.group_account_invoice"
+                            attrs="{'invisible': [('use_gift', '=', False)]}" />
+                    <button name="create_replacement" type="object" string="Replace" groups="account.group_account_invoice"
+                            attrs="{'invisible': [('use_replacement', '=', False)]}" />
+                </field>
+            </field>
+        </record>
+
+        <record id="miraity_helpdesk_team_view_form_inherit" model="ir.ui.view">
+            <field name="name">view.inherit.helpdesk.team.form</field>
+            <field name="model">helpdesk.team</field>
+            <field name="inherit_id" ref="helpdesk.helpdesk_team_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='use_coupons']/../.." position="after">
+                    <div class="col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="use_replacement"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="use_replacement"/>
+                            <div class="text-muted">
+                                Generate Replacement
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="use_gift"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="use_gift"/>
+                            <div class="text-muted">
+                                Generate Gifts
+                            </div>
+                        </div>
+                    </div>
                 </xpath>
 
             </field>
