@@ -30,7 +30,7 @@ class Magento(http.Controller):
         return response
 
     #  {"jsonrpc": "2.0","params": {"name": "Mohammmed API", "phone": "00244126090", "mobile": "01014527537", "email": "aaa@gmail.com"}}
-    @http.route('/create/contact', type='json', auth='public')
+    @http.route('/create/contacts', type='json', auth='public')
     def update_sale_order(self, **kw):
         model = http.request.env['magento.api']
         response = model.create_contact(kw)

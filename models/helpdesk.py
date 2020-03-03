@@ -6,11 +6,11 @@ class HelpDeskTicket(models.Model):
     _inherit = 'helpdesk.ticket'
 
     code = fields.Char(string="Code", required=False, )
-    action_type = fields.Selection(string="", selection=[('return', 'Return'), ('refund', 'Refund'), ])
+    action_type = fields.Selection(string="Type", selection=[('return', 'Return'), ('refund', 'Refund'), ])
     use_replacement = fields.Boolean(related='team_id.use_replacement', string='Use Replacement')
     sale_order_gift_id = fields.Many2one(comodel_name="sale.order", string="Gift number", )
     use_gift = fields.Boolean(related='team_id.use_gift', string='Use Gifts')
-    gift_created = fields.Boolean(string="gift created !",  )
+    gift_created = fields.Boolean(string="gift created !", )
 
     def create_gift(self):
         for rec in self:
@@ -44,9 +44,6 @@ class HelpDeskTicket(models.Model):
     def create_replacement(self):
         for rec in self:
             raise ValidationError(_("NOT IMPLEMENTED YET !!!"))
-
-
-
 
     @api.model
     def create(self, values):
