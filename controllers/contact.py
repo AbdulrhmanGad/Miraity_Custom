@@ -15,6 +15,7 @@ class Contact(http.Controller):
         model = http.request.env['contact.api']
         response = model.create_related_partner(kw)
         return response
+
     @http.route('/create/cheque', type='json', auth='public')
     def create_cheques(self, **kw):
         model = http.request.env['contact.api']

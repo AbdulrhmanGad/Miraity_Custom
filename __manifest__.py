@@ -7,7 +7,7 @@
     'author': 'Ahmed Maher',
     'website': '',
     'license': 'LGPL-3',
-    'depends': ['base', 'contacts', 'stock', 'account', 'sale', 'purchase', 'helpdesk', 'helpdesk_stock'],
+    'depends': ['base', 'contacts', 'stock', 'account', 'sale', 'purchase', 'helpdesk', 'helpdesk_stock', 'helpdesk_account'],
     'data': [
         'security/ir.model.access.csv',
         'security/secrity_warehouse.xml',
