@@ -9,7 +9,7 @@ class AbstractProductApi(models.AbstractModel):
 
     #  {"jsonrpc": "2.0","params": {"product": "", "partner": "", "review": "5"}}
     def create_product_review(self, kw):
-        auth_user = http.request.env['authenticate.api'].authenticate('erptest2', 'demo', 'demo')
+        auth_user = http.request.env['authenticate.api'].authenticate('erp', 'demo', 'demo')
         magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
         magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
         if int(magento_user_id) == int(auth_user):
