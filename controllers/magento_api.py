@@ -19,21 +19,31 @@ class AbstractMagentoApi(models.AbstractModel):
         if int(magento_user_id) == int(auth_user):
             if magento_token and magento_token == kw['token']:
                 partner_id = http.request.env['res.partner'].sudo().search([('code', '=', kw['customer'])])
+                shipping_id = http.request.env['res.partner'].sudo().search([('code', '=', kw['shipping_address'])])
                 if partner_id:
-                    for product in kw['products']:
-                        product_id = http.request.env['product.product'].sudo().search(
-                            [('sku_no', '=', product['sku'])])
-                        if len(product_id) == 0:
-                            http.request.env['authenticate.api'].logout()
-                            return {
-                                'success': False,
-                                'message': 'One or More products Not Founded !!',
-                                'code': '305',
-                                'ID': None,
-                            }
-
+                    if 'products' in kw:
+                        for product in kw['products']:
+                            product_id = http.request.env['product.product'].sudo().search(
+                                [('sku_no', '=', product['sku'])])
+                            if len(product_id) == 0:
+                                http.request.env['authenticate.api'].logout()
+                                return {
+                                    'success': False,
+                                    'message': 'One or More products Not Founded !!',
+                                    'code': '305',
+                                    'ID': None,
+                                }
+                    else:
+                        return {
+                            'success': False,
+                            'message': 'Please enter Product for sale order',
+                            'code': '310',
+                            'ID': None,
+                        }
                     sale_id = http.request.env['sale.order'].sudo().create({
                         'partner_id': partner_id.id,
+                        'partner_shipping_id': shipping_id.id,
+                        'payment_method': '1' if int(kw['payment']) == 1 else '2' if int(kw['payment']) == 2 else False,
                     })
                     for product in kw['products']:
                         product_id = http.request.env['product.product'].sudo().search(
@@ -279,9 +289,77 @@ class AbstractMagentoApi(models.AbstractModel):
                 'ID': None,
             }
 
+    def create_small_ticket(self, kw):
+        magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
+        magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
+        magento_helpdesk_team_id = http.request.env['ir.config_parameter'].sudo().get_param(
+            'base_setup.magento_helpdesk_team_id')
+        # auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
+        auth_user = http.request.env['authenticate.api'].authenticate('erptest2', 'demo', 'demo')
+        if int(magento_user_id) == int(auth_user):
+            if magento_helpdesk_team_id:
+                if magento_token and magento_token == kw['token']:
+                    partner_id = http.request.env['res.partner'].sudo().search([('code', '=', kw['customer_code'])])
+                    if partner_id and kw['name']:
+                        ticket = http.request.env['helpdesk.ticket'].sudo().create({
+                            'partner_id': partner_id.id,
+                            'team_id': int(magento_helpdesk_team_id),
+                            'priority': kw['priority'],
+                            'description': kw['description'],
+                            'name': kw['name'],
+                        })
+                        http.request.env['authenticate.api'].logout()
+                        return {'success': True, 'message': "Success, Ticket created %s" % ticket.code}
+                    else:
+                        http.request.env['authenticate.api'].logout()
+                        return {
+                            'success': False,
+                            'message': 'Check Contact code or Product code',
+                            'code': '102',
+                            'ID': None,
+                        }
+                else:
+                    http.request.env['authenticate.api'].logout()
+                    return {
+                        'success': False,
+                        'message': 'Failed Token error',
+                        'code': '102',
+                        'ID': None,
+                    }
+            else:
+                http.request.env['authenticate.api'].logout()
+                return {
+                    'success': False,
+                    'message': 'Please, Contact Administrator to Allow Magento HelpDesk Team ',
+                    'code': '302',
+                    'ID': None,
+                }
+        else:
+            http.request.env['authenticate.api'].logout()
+            return {
+                'success': False,
+                'message': 'Please, Contact Administrator to Allow Magento Setting User',
+                'code': '301',
+                'ID': None,
+            }
 
+    # {
+    #     "jsonrpc": "2.0",
+    #     "params":
+    #         {
+    #             "token": "ceaab57d23fcc80144e3b143be1112ce3d159ba2",
+    #             "name": "7777",
+    #             "phone": "00244126090",
+    #             "mobile": "01014527537",
+    #             "email": "aaa@gmail.com",
+    #             "website": "website.com",
+    #             "is_channel": 1,
+    #             "channel": "2",
+    #             "address_name": "",
+    #             "address_phone": ""
+    #         }
+    # }
 
-    #  {"jsonrpc": "2.0","params": {"name": "Mohammmed API", "phone": "00244126090", "mobile": "01014527537", "email": "aaa@gmail.com"}}
     def create_contact(self, kw):
             # auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
             auth_user = http.request.env['authenticate.api'].authenticate('erptest2', 'demo', 'demo')
@@ -323,13 +401,15 @@ class AbstractMagentoApi(models.AbstractModel):
                                 'phone': kw['phone'],
                                 'mobile': kw['mobile'],
                                 'email': kw['email'],
+                                'company_type': 'person',
+                                'website': kw['website'],
+                                'is_sales_channel': kw['is_channel'],
+                                'channel_type': '3' if kw['channel'] == '3' else '2' if kw['channel'] == '2' else False ,
                                 'property_account_payable_id': account_receive_id.id,
                                 'property_account_receivable_id': account_payable_id,
-                                'company_type': 'person',
-                                'is_sales_channel': True,
+
                             }
                             new_contact = request.env['res.partner'].sudo().create(vals)
-                            print(kw["address_name"])
                             if kw["address_name"] or kw["address_phone"]:
                                 request.env['res.partner'].sudo().create({
                                     'parent_id':new_contact.id,
@@ -360,8 +440,11 @@ class AbstractMagentoApi(models.AbstractModel):
                                 'mobile': kw['mobile'],
                                 'email': kw['email'],
                                 'company_type': 'person',
-                                'is_sales_channel': True,
+                                'website': kw['website'],
+                                'is_sales_channel': kw['is_channel'],
+                                'channel_type': '3' if kw['channel'] == '3' else '2' if kw['channel'] == '2' else False ,
                             }
+                            print(vals)
                             new_contact = request.env['res.partner'].sudo().create(vals)
                             if 'address_name' in kw and 'address_phone' in kw:
                                 request.env['res.partner'].sudo().create({
@@ -373,7 +456,7 @@ class AbstractMagentoApi(models.AbstractModel):
                             args = {
                                 'success': True,
                                 'message': "Success",
-                                'ID': new_contact.id,
+                                'ID': "Contact ID is %s " %new_contact.code,
                             }
                             http.request.env['authenticate.api'].logout()
                             return args
@@ -394,12 +477,3 @@ class AbstractMagentoApi(models.AbstractModel):
                 }
             http.request.env['authenticate.api'].logout()
             return args
-    def test(self, kw):
-
-        args = {
-            'success': False,
-            'message': 'testsssssssssssss',
-            'code': '1000002',
-            'ID': None,
-        }
-        return args
