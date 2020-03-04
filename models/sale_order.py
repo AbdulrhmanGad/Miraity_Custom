@@ -25,6 +25,7 @@ class SaleOrder(models.Model):
     shipping_no = fields.Char(string="Shipping No", )
     ticket_id = fields.Many2one(comodel_name="helpdesk.ticket", string="Ticket" )
     company_id = fields.Many2one('res.company', string='Company', readonly=True, default=lambda self: self.env.user.company_id)
+    payment_method = fields.Selection(string="", selection=[('1', 'cash'), ('2', 'bank'), ], required=False, )
 
     def action_confirm(self):
         res = super(SaleOrder, self).action_confirm()

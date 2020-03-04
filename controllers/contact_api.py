@@ -9,9 +9,23 @@ from datetime import date, datetime
 class AbstractContactApi(models.AbstractModel):
     _name = 'contact.api'
 
-    #  {"jsonrpc": "2.0","params":{"token": "583eb6fe45dab22785b65a7713cb32092a1d423b","order":"S00040","products":[
-    #  	{"sku": "MIRSa000037","qty":"1"}
-    #  ] }}
+    # {
+    #     "jsonrpc": "2.0",
+    #     "params": {
+    #         "token": "ceaab57d23fcc80144e3b143be1112ce3d159ba2",
+    #         "code": "CT0001",
+    #         "products":
+    #             [
+    #                 {
+    #                     "sku": "SOSP00010032",
+    #                     "start_date": "2020-2-20",
+    #                     "end_date": "2020-2-24"
+    #
+    #                 }
+    #             ]
+    #     }
+    # }
+
     def create_related_products(self, kw):
         magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
         magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
@@ -49,6 +63,12 @@ class AbstractContactApi(models.AbstractModel):
                                 'start_date': start_date,
                                 'end_date': end_date,
                             })
+                            return {
+                                'success': True,
+                                'message': 'Related Product /s has been created',
+                                'code': '307',
+                                'ID': None,
+                            }
                     else:
                         return {
                             'success': False,
@@ -80,9 +100,23 @@ class AbstractContactApi(models.AbstractModel):
                 'ID': None,
             }
 
-    # {"jsonrpc": "2.0", "params": {"token": "583eb6fe45dab22785b65a7713cb32092a1d423b", "code": "CT0001", "partners": [
-    #     {"code": "CT0019", "commission": "500", "start_date": "2020-2-20", "end_date": "2020-2-24"}
-    # ]}}
+    # {
+    #     "jsonrpc": "2.0",
+    #     "params": {
+    #         "token": "ceaab57d23fcc80144e3b143be1112ce3d159ba2",
+    #         "code": "CT0001",
+    #         "partners":
+    #             [
+    #                 {
+    #                     "code": "CT0019",
+    #                     "commission": "500",
+    #                     "start_date": "2020-2-20",
+    #                     "end_date": "2020-2-24"
+    #
+    #                 }
+    #             ]
+    #     }
+    # }
 
     def create_related_partner(self, kw):
 
@@ -160,6 +194,8 @@ class AbstractContactApi(models.AbstractModel):
                 'code': '301',
                 'ID': None,
             }
+
+
     #   {"jsonrpc": "2.0","params": {"token": "ceaab57d23fcc80144e3b143be1112ce3d159ba2", "code": "CT0002", "value": "5555"}}
     def create_cheques(self, kw):
         magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')

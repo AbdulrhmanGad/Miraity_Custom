@@ -39,6 +39,8 @@ class ResPartner(models.Model):
             if not rec.env.user.has_group('sales_team.group_sale_manager'):
                 if rec.channel_type == '1':
                     raise ValidationError(_(" Unable to Save Type With Company. Please contact your Administrator"))
+            # if rec.channel_type == '2' or rec.channel_type == '3' and rec.is_sales_channel == False:
+            #     raise ValidationError(_("Contact must be sales channel"))
 
     @api.model
     def create(self, values):
