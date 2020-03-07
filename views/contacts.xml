@@ -11,11 +11,11 @@
                 </xpath>
                 <xpath expr="//field[@name='property_supplier_payment_term_id']" position="before">
                     <field name="is_vendor"/>
+                    <field name="code2" attrs="{'invisible': [('is_vendor', '=', False)]}"/>
                 </xpath>
 
                 <xpath expr="//field[@name='type']" position="before">
                     <field name="code"/>
-                    <field name="code2"/>
                 </xpath>
 
                 <xpath expr="//field[@name='property_stock_customer']/../.." position="after">

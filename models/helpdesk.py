@@ -2,6 +2,87 @@ from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 
+class SaleOrderGiftReplace(models.TransientModel):
+    _name = 'sale.order.gift.replacement'
+    _description = 'sale order gift or replacement'
+
+    is_gift = fields.Boolean(string="Gift",)
+    is_replacement = fields.Boolean(string="Replacement",)
+    product_id = fields.Many2one(comodel_name="product.product", string="product", )
+    ticket_id = fields.Many2one(comodel_name="helpdesk.ticket", string="Ticket" )
+
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        res ={}
+        for rec in self:
+            if rec.is_gift:
+                res['domain'] = {'product_id': [('is_gift', '=', 1)]}
+        return res
+
+    def action_apply(self):
+        for rec in self:
+            if rec.is_gift:
+                if rec.ticket_id.gift_created:
+                    raise ValidationError(_("Gift Already Created !!"))
+                else:
+                    if rec.ticket_id.partner_id:
+                        if rec.ticket_id.sale_order_id:
+                            if rec.product_id:
+                                if rec.product_id.sku_no:
+                                    sale_id = self.env['sale.order'].create({
+                                        'ticket_id': rec.ticket_id.id,
+                                        'partner_id': rec.ticket_id.partner_id.id,
+                                        'miraity_type': 'gift',
+                                    })
+                                    self.env['sale.order.line'].create({
+                                        'order_id': sale_id.id,
+                                        'product_id': rec.product_id.id,
+                                        'name': "[" + rec.product_id.sku_no + "]" + rec.product_id.name,
+                                        'product_uom_qty': 1,
+                                        'price_unit': 0,
+                                    })
+                                else:
+                                    raise ValidationError(_("SKU Number for Product Missed"))
+                                rec.ticket_id.gift_created = 1
+                                rec.ticket_id.sale_order_gift_id = sale_id.id
+                            else:
+                                raise ValidationError(_("product is required"))
+                        else:
+                            raise ValidationError(_("Sale order is required"))
+                    else:
+                        raise ValidationError(_("Customer is required"))
+            elif rec.is_replacement:
+                if rec.ticket_id.replacement_created:
+                    raise ValidationError(_("Gift Already Created !!"))
+                else:
+                    if rec.ticket_id.partner_id:
+                        if rec.ticket_id.sale_order_id:
+                            if rec.product_id:
+                                if rec.product_id.sku_no:
+                                    sale_id = self.env['sale.order'].create({
+                                        'ticket_id': rec.ticket_id.id,
+                                        'partner_id': rec.ticket_id.partner_id.id,
+                                        'miraity_type': 'gift', # XXXXX I think it Should be replacement
+                                    })
+                                    self.env['sale.order.line'].create({
+                                        'order_id': sale_id.id,
+                                        'product_id': rec.product_id.id,
+                                        'name': "[" + rec.product_id.sku_no + "]" + rec.product_id.name,
+                                        'product_uom_qty': 1,
+                                        'price_unit': 0,
+                                    })
+                                else:
+                                    raise ValidationError(_("SKU Number for Product Missed"))
+                                rec.ticket_id.replacement_created = 1
+                                rec.ticket_id.sale_order_gift_id = sale_id.id
+                            else:
+                                raise ValidationError(_("product is required"))
+                        else:
+                            raise ValidationError(_("Sale order is required"))
+                    else:
+                        raise ValidationError(_("Customer is required"))
+
+
 class HelpDeskTicket(models.Model):
     _inherit = 'helpdesk.ticket'
 
@@ -11,39 +92,41 @@ class HelpDeskTicket(models.Model):
     sale_order_gift_id = fields.Many2one(comodel_name="sale.order", string="Gift number", )
     use_gift = fields.Boolean(related='team_id.use_gift', string='Use Gifts')
     gift_created = fields.Boolean(string="gift created !", )
+    replacement_created = fields.Boolean(string="gift created !", )
 
     def create_gift(self):
         for rec in self:
-            if rec.gift_created:
-                raise ValidationError(_("Gift Already Created !!"))
-            else:
-                if rec.partner_id:
-                    if rec.sale_order_id:
-                        if rec.product_id:
-                            sale_id = self.env['sale.order'].create({
-                                'ticket_id': rec.id,
-                                'partner_id': rec.partner_id.id,
-                                'miraity_type': 'gift',
-                            })
-                            self.env['sale.order.line'].create({
-                                'order_id': sale_id.id,
-                                'product_id': rec.product_id.id,
-                                'name': "[" + rec.product_id.sku_no + "]" + rec.product_id.name,
-                                'product_uom_qty': 1,
-                                'price_unit': 0,
-                            })
-                            rec.gift_created = 1
-                            rec.sale_order_gift_id = sale_id.id
-                        else:
-                            raise ValidationError(_("product is required"))
-                    else:
-                        raise ValidationError(_("Sale order is required"))
-                else:
-                    raise ValidationError(_("Customer is required"))
+            view = self.env.ref('Miraity_Custom.sale_order_gift_replacement_view')
+            new_id = self.env['sale.order.gift.replacement']
+
+            return {
+                'name': _("You Will Create Sale Order"),
+                'view_mode': 'form',
+                'view_id': view.id,
+                'res_id': False,
+                'context': {'default_is_gift': 1, 'default_ticket_id': self.id},
+                'view_type': 'form',
+                'res_model': 'sale.order.gift.replacement',
+                'type': 'ir.actions.act_window',
+                'target': 'new',
+            }
 
     def create_replacement(self):
         for rec in self:
-            raise ValidationError(_("NOT IMPLEMENTED YET !!!"))
+            view = self.env.ref('Miraity_Custom.sale_order_gift_replacement_view')
+            new_id = self.env['sale.order.gift.replacement']
+
+            return {
+                'name': _("You Will Create Sale Order"),
+                'view_mode': 'form',
+                'view_id': view.id,
+                'res_id': False,
+                'context': {'default_is_replacement': 1, 'default_ticket_id': self.id},
+                'view_type': 'form',
+                'res_model': 'sale.order.gift.replacement',
+                'type': 'ir.actions.act_window',
+                'target': 'new',
+            }
 
     @api.model
     def create(self, values):

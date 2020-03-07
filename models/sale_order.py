@@ -41,3 +41,8 @@ class SaleOrder(models.Model):
     #         if rec.status == "" and rec.shipping_no == False:
     #             pass
 
+
+class SaleOrderLine(models.Model):
+    _inherit = 'sale.order.line'
+
+    is_sample = fields.Boolean(string="Sample", )

@@ -21,7 +21,6 @@
             }"
                 groups="base.group_partner_manager"/>
 
-    <!-- wizard view -->
     <record id="product_wizard_view" model="ir.ui.view">
         <field name="name">Missing Product Sku</field>
         <field name="model">miss.product.sku</field>
