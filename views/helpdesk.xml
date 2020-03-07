@@ -24,10 +24,10 @@
             <field name="inherit_id" ref="helpdesk_stock.helpdesk_ticket_view_form_inherit_helpdesk_stock"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='product_id']" position="attributes">
-<!--                    <attribute name="options">{'no_create': True}</attribute>-->
+                    <!--                    <attribute name="options">{'no_create': True}</attribute>-->
                 </xpath>
                 <xpath expr="//field[@name='product_id']" position="after">
-                    <field name="sale_order_gift_id" readonly="True" />
+                    <field name="sale_order_gift_id" readonly="True"/>
                 </xpath>
             </field>
         </record>
@@ -58,7 +58,6 @@
             </field>
         </record>
 
-        <!-- Inherit Form View to Modify it -->
         <record id="miraity_helpdesk_ticket_view_form_inherit_helpdesk_invoicing_inherit" model="ir.ui.view">
             <field name="name">view.inherit.helpdesk.form</field>
             <field name="model">helpdesk.ticket</field>
@@ -69,9 +68,10 @@
                     <field name="use_replacement" invisible="1"/>
                     <field name="use_gift" invisible="1"/>
                     <button name="create_gift" type="object" string="Gift" groups="account.group_account_invoice"
-                            attrs="{'invisible': [('use_gift', '=', False)]}" />
-                    <button name="create_replacement" type="object" string="Replace" groups="account.group_account_invoice"
-                            attrs="{'invisible': [('use_replacement', '=', False)]}" />
+                            attrs="{'invisible': [('use_gift', '=', False)]}"/>
+                    <button name="create_replacement" type="object" string="Replace"
+                            groups="account.group_account_invoice"
+                            attrs="{'invisible': [('use_replacement', '=', False)]}"/>
                 </field>
             </field>
         </record>
@@ -106,6 +106,30 @@
                     </div>
                 </xpath>
 
+            </field>
+        </record>
+        <record id="sale_order_gift_replacement_view" model="ir.ui.view">
+            <field name="name">Sale Order Gift Or Replacement</field>
+            <field name="model">sale.order.gift.replacement</field>
+            <field name="arch" type="xml">
+                <form string="Missing Product Sku">
+                    <div attrs="{'invisible': [('is_gift', '=', False)]}">
+                        YOU Will Create Sale Order For Gift
+                    </div>
+                    <div attrs="{'invisible': [('is_replacement', '=', False)]}">
+                        YOU Will Create Sale Order For Replacement
+                    </div>
+                    <group>
+                        <field name="product_id" />
+                    </group>
+                    <field name="is_gift" invisible="1"/>
+                    <field name="is_replacement" invisible="1"/>
+                    <field name="ticket_id" invisible="1"/>
+                    <footer>
+                        <button string="Apply" name="action_apply" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
             </field>
         </record>
 

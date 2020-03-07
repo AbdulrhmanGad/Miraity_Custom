@@ -15,7 +15,7 @@ class ProductBrand(models.Model):
     def _onchange_short_name(self):
         for rec in self:
             if rec.short_name:
-                if not re.match("^[a-z]*$", rec.short_name):
+                if not re.match("^[a-zA-Z]*$", rec.short_name):
                     raise ValidationError(_("Short Code Must be only letters"))
 
 

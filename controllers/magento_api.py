@@ -51,6 +51,7 @@ class AbstractMagentoApi(models.AbstractModel):
                         http.request.env['sale.order.line'].sudo().create({
                             'order_id': sale_id.id,
                             'product_id': product_id.id,
+                            'sample': True if kw['sample'] == 1 else False,
                             'name': "[" + product_id.sku_no + "]" + product_id.name,
                             'product_uom_qty': product['quantity'],
                             'price_unit': product['price_unit'],

@@ -22,7 +22,7 @@
             <field name="name">res.partner</field>
             <field name="code">res.partner</field>
             <field name="prefix">P</field>
-            <field name="padding">4</field>
+            <field name="padding">6</field>
         </record>
 
     </data>

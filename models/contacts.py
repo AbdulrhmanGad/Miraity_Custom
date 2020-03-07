@@ -32,6 +32,22 @@ class ResPartner(models.Model):
     balance_paid = fields.Float(string="Balance Paid", )
     balance_pending = fields.Float(string="Balance Pending", )
 
+    @api.onchange('is_customer')
+    def _onchange_is_customer(self):
+        for rec in self:
+            if rec.is_customer:
+                rec.customer_rank += 1
+            else:
+                rec.customer_rank -= 1
+
+    @api.onchange('is_vendor')
+    def _onchange_is_vendor(self):
+        for rec in self:
+            if rec.is_vendor:
+                rec.supplier_rank += 1
+            else:
+                rec.supplier_rank -= 1
+
     @api.onchange('channel_type')
     @api.constrains('channel_type')
     def _constrains_channel_type(self):

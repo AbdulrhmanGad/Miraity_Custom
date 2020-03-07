@@ -12,6 +12,7 @@ class ProductTemplate(models.Model):
     magento_test_qty = fields.Float(string="Magento Sample", )
     e_commerce = fields.Boolean(string="E-Commerce", )
     active = fields.Boolean('Active', default=True, help="Set active to false to hide the Brand without removing it.")
+    is_gift = fields.Boolean(string="Gift")
     review_ids = fields.One2many(comodel_name="product.review", inverse_name="product_id", string="Product Review", )
 
     def name_get(self):
