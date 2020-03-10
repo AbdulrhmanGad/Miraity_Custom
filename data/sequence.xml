@@ -21,8 +21,8 @@
         <record id="partner_code2_sequence" model="ir.sequence">
             <field name="name">res.partner</field>
             <field name="code">res.partner</field>
-            <field name="prefix">P</field>
-            <field name="padding">6</field>
+            <field name="prefix"></field>
+            <field name="padding">4</field>
         </record>
 
     </data>

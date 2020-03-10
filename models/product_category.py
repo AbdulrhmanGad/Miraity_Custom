@@ -6,7 +6,7 @@ import re
 class ProductBrand(models.Model):
     _inherit = 'product.category'
 
-    short_name = fields.Char(string="Short Name", size=2)
+    short_name = fields.Char(string="Short Name", size=1)
     product_count = fields.Integer(string="product sequence", )
     active = fields.Boolean('Active', default=True, help="Set active to false to hide the Category without removing it.")
 

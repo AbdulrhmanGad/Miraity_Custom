@@ -23,9 +23,10 @@ class MissingProductSku(models.TransientModel):
                 if product.categ_id.parent_id and product.seller_ids:
                     if  product.seller_ids[0] and product.seller_ids[0].name.code2 != False :
                         seq = product.categ_id.product_count
-                        product.sku_no = short_description.upper() +\
+                        product.sku_no = short_description.upper() + \
+                                         str(product.categ_id.parent_id.parent_id.name[:1]) + \
+                                         str(product.categ_id.parent_id.name[:1]) + \
                                          str(product.categ_id.name[:1]) +\
-                                         str(product.categ_id.parent_id.name[:1]) +\
                                          product.seller_ids[0].name.code2 + \
                                          str(seq).zfill(4)
                         product.categ_id.product_count += 1
