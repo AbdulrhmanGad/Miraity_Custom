@@ -362,8 +362,8 @@ class AbstractMagentoApi(models.AbstractModel):
     # }
 
     def create_contact(self, kw):
-            # auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
-            auth_user = http.request.env['authenticate.api'].authenticate('erp', 'demo', 'demo')
+            auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
+            # auth_user = http.request.env['authenticate.api'].authenticate('erp', 'demo', 'demo')
             magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
             magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
             is_account_prefix = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.is_account_prefix')
@@ -445,14 +445,20 @@ class AbstractMagentoApi(models.AbstractModel):
                                 'is_sales_channel': kw['is_channel'],
                                 'channel_type': '3' if kw['channel'] == '3' else '2' if kw['channel'] == '2' else False ,
                             }
-                            print(vals)
                             new_contact = request.env['res.partner'].sudo().create(vals)
+                            country_id = http.request.env['res.country'].sudo().search([('name', '=', kw["country"])])
                             if 'address_name' in kw and 'address_phone' in kw:
                                 request.env['res.partner'].sudo().create({
                                     'parent_id': new_contact.id,
                                     'type': "delivery",
                                     'name': kw["address_name"],
                                     'phone': kw["address_phone"],
+                                    'mobile': kw["mobile"],
+                                    'street': kw["street"],
+                                    'city': kw["city"],
+                                    'country_id': country_id,
+                                    'zip': kw["zip"],
+                                    'comment': kw["comment"],
                                 })
                             args = {
                                 'success': True,

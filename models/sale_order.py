@@ -1,4 +1,4 @@
-from odoo import api, fields, models,_
+from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
 
@@ -17,14 +17,15 @@ class SaleOrder(models.Model):
         ('cancel_request', 'Cancel Request'),
         ('reschedule', 'Reschedule'),
         ('cancel', 'Cancelled'),
-        ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
+    ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
     miraity_type = fields.Selection(string="Miraity Type", selection=[('celebrity', 'Celebrity'),
                                                                       ('gift', 'Gift'),
                                                                       ])
     is_sales_channel = fields.Boolean(related="partner_id.is_sales_channel")
     shipping_no = fields.Char(string="Shipping No", )
-    ticket_id = fields.Many2one(comodel_name="helpdesk.ticket", string="Ticket" )
-    company_id = fields.Many2one('res.company', string='Company', readonly=True, default=lambda self: self.env.user.company_id)
+    ticket_id = fields.One2many(comodel_name="helpdesk.ticket", inverse_name="sale_order_gift_id",  string="Ticket")
+    company_id = fields.Many2one('res.company', string='Company', readonly=True,
+                                 default=lambda self: self.env.user.company_id)
     payment_method = fields.Selection(string="", selection=[('1', 'cash'), ('2', 'bank'), ], required=False, )
 
     def action_confirm(self):
@@ -32,8 +33,18 @@ class SaleOrder(models.Model):
         for rec in self:
             if not rec.order_line:
                 raise ValidationError(_("Please Enter Lines"))
-        return  res
+        return res
 
+    ticket_count = fields.Integer(string='Tickets', compute='_compute_tickets')
+
+    def action_view_tickets(self):
+        action = self.env.ref('helpdesk.helpdesk_ticket_action_main_my').read()[0]
+        return action
+
+    @api.depends('ticket_id')
+    def _compute_tickets(self):
+        for order in self:
+            order.ticket_count = len(order.ticket_id)
 
     # @api.constrains('shipping_no')
     # def _onchange_shipping_no(self):
