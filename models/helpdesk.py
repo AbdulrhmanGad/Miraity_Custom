@@ -30,9 +30,9 @@ class SaleOrderGiftReplace(models.TransientModel):
                             if rec.product_id:
                                 if rec.product_id.sku_no:
                                     sale_id = self.env['sale.order'].create({
-                                        'ticket_id': rec.ticket_id.id,
                                         'partner_id': rec.ticket_id.partner_id.id,
-                                        'miraity_type': 'gift',
+                                        'ticket_id': (4, rec.ticket_id.id),
+                                        # 'miraity_type': 'gift',
                                     })
                                     self.env['sale.order.line'].create({
                                         'order_id': sale_id.id,
@@ -41,6 +41,7 @@ class SaleOrderGiftReplace(models.TransientModel):
                                         'product_uom_qty': 1,
                                         'price_unit': 0,
                                     })
+
                                 else:
                                     raise ValidationError(_("SKU Number for Product Missed"))
                                 rec.ticket_id.gift_created = 1
@@ -60,7 +61,7 @@ class SaleOrderGiftReplace(models.TransientModel):
                             if rec.product_id:
                                 if rec.product_id.sku_no:
                                     sale_id = self.env['sale.order'].create({
-                                        'ticket_id': rec.ticket_id.id,
+                                        'ticket_id': (4, rec.ticket_id.id),
                                         'partner_id': rec.ticket_id.partner_id.id,
                                         'miraity_type': 'gift', # XXXXX I think it Should be replacement
                                     })

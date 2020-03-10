@@ -57,3 +57,4 @@ class SaleChannelReview(models.Model):
         ('4', '4 Star'),
         ('5', '5 Star'),
     ], required=True, )
+    note = fields.Text(string="Note", required=False, )
