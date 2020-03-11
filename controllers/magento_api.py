@@ -14,8 +14,8 @@ class AbstractMagentoApi(models.AbstractModel):
     def create_sale_order(self, kw):
         magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
         magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
-        auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
-        # auth_user = http.request.env['authenticate.api'].authenticate('erp', 'demo', 'demo')
+        # auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
+        auth_user = http.request.env['authenticate.api'].authenticate('erp', 'demo', 'demo')
         if int(magento_user_id) == int(auth_user):
             if magento_token and magento_token == kw['token']:
                 partner_id = http.request.env['res.partner'].sudo().search([('code', '=', kw['customer'])])
