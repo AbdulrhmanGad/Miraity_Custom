@@ -57,3 +57,4 @@ class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
     is_sample = fields.Boolean(string="Sample", )
+    celebrity_id = fields.Many2one("res.partner", string="Celebrity",  )
