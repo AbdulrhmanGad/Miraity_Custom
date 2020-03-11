@@ -14,8 +14,8 @@ class AbstractMagentoApi(models.AbstractModel):
     def create_sale_order(self, kw):
         magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
         magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
-        # auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
-        auth_user = http.request.env['authenticate.api'].authenticate('erp', 'demo', 'demo')
+        auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
+        # auth_user = http.request.env['authenticate.api'].authenticate('erp', 'demo', 'demo')
         if int(magento_user_id) == int(auth_user):
             if magento_token and magento_token == kw['token']:
                 partner_id = http.request.env['res.partner'].sudo().search([('code', '=', kw['customer'])])
@@ -42,19 +42,24 @@ class AbstractMagentoApi(models.AbstractModel):
                         }
                     sale_id = http.request.env['sale.order'].sudo().create({
                         'partner_id': partner_id.id,
+                        'miraity_type':"celebrity" if kw['type'] == "celebrity" else "gift" if kw['type'] == "gift" else False,
+                        'date_order': kw['date_order'],
                         'partner_shipping_id': shipping_id.id,
                         'payment_method': '1' if int(kw['payment']) == 1 else '2' if int(kw['payment']) == 2 else False,
                     })
                     for product in kw['products']:
                         product_id = http.request.env['product.product'].sudo().search(
                             [('sku_no', '=', product['sku'])])
+                        celebrity_id = http.request.env['res.partner'].sudo().search(
+                            [('code', '=', product['celebrity'])])
                         http.request.env['sale.order.line'].sudo().create({
                             'order_id': sale_id.id,
                             'product_id': product_id.id,
-                            'sample': True if kw['sample'] == 1 else False,
+                            'is_sample': True if int(product['sample']) == 1 else False,
                             'name': "[" + product_id.sku_no + "]" + product_id.name,
                             'product_uom_qty': product['quantity'],
                             'price_unit': product['price_unit'],
+                            'celebrity_id': celebrity_id.id,
                         })
                     http.request.env['authenticate.api'].logout()
                     return {'success': True, 'message': "Success, sale order created %s" % sale_id.name}
