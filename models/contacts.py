@@ -7,6 +7,7 @@ class ResPartner(models.Model):
 
     code = fields.Char(string="Code", readonly=True)
     code2 = fields.Char(string="Code2", readonly=True)
+    code3 = fields.Integer(string="Code3", readonly=True)
     is_sales_channel = fields.Boolean(string="Sales Channel", )
     is_customer = fields.Boolean(string="Customer", )
     is_vendor = fields.Boolean(string="vendor", )
