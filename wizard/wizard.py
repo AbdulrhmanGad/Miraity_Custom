@@ -54,4 +54,10 @@ class ContactMissCode(models.TransientModel):
                 seq = sequence + 1
                 contact.code = 'CT' + str(seq).zfill(4)
                 self.env.user.company_id.partner_count += 1
+
+            contact2_ids = self.env['res.partner'].search([('code2', '=', False)])
+            for contact in contact2_ids:
+                if contact.is_vendor:
+                    code2 = self.env['ir.sequence'].next_by_code('res.partner') or '/'
+                    contact.code2 = str(code2)
         return {'type': 'ir.actions.act_window_close'}
