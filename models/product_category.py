@@ -3,7 +3,7 @@ from odoo.exceptions import ValidationError
 import re
 
 
-class ProductBrand(models.Model):
+class ProductCategory(models.Model):
     _inherit = 'product.category'
 
     short_name = fields.Char(string="Short Name", size=1)
