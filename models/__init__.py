@@ -11,3 +11,4 @@ from . import sale_order
 from . import settings
 from . import stock_picking
 from . import send_mail
+from . import account

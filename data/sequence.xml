@@ -24,6 +24,12 @@
             <field name="prefix"></field>
             <field name="padding">4</field>
         </record>
+        <record id="journals_sequence" model="ir.sequence">
+            <field name="name">account.journal</field>
+            <field name="code">account.journal</field>
+            <field name="prefix">JNR</field>
+            <field name="padding">4</field>
+        </record>
 
     </data>
 </odoo>

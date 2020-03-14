@@ -23,6 +23,7 @@
         'views/sale_order.xml',
         'views/settings.xml',
         'views/stock.xml',
+        'views/account.xml',
         'wizard/wizard.xml',
         'wizard/purchase.xml',
     ],

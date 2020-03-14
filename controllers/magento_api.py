@@ -14,8 +14,8 @@ class AbstractMagentoApi(models.AbstractModel):
     def create_sale_order(self, kw):
         magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
         magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
-        # auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
-        auth_user = http.request.env['authenticate.api'].authenticate('erp', 'demo', 'demo')
+        auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
+        # auth_user = http.request.env['authenticate.api'].authenticate('erp', 'demo', 'demo')
         if int(magento_user_id) == int(auth_user):
             if magento_token and magento_token == kw['token']:
                 partner_id = http.request.env['res.partner'].sudo().search([('code', '=', kw['customer'])])
@@ -42,7 +42,8 @@ class AbstractMagentoApi(models.AbstractModel):
                         }
                     sale_id = http.request.env['sale.order'].sudo().create({
                         'partner_id': partner_id.id,
-                        'miraity_type':"celebrity" if kw['type'] == "celebrity" else "gift" if kw['type'] == "gift" else False,
+                        'miraity_type': "celebrity" if kw['type'] == "celebrity" else "gift" if kw['type'] == "gift"
+                                                                                                else False,
                         'date_order': kw['date_order'],
                         'partner_shipping_id': shipping_id.id,
                         'payment_method': '1' if int(kw['payment']) == 1 else '2' if int(kw['payment']) == 2 else False,
@@ -61,6 +62,43 @@ class AbstractMagentoApi(models.AbstractModel):
                             'price_unit': product['price_unit'],
                             'celebrity_id': celebrity_id.id,
                         })
+                    sale_id.action_confirm()
+                    invoice = sale_id._create_invoices()
+                    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>", invoice)
+                    invoice.action_post()
+
+                    for payment in kw['payments']:
+                        journal_id = http.request.env['account.journal'].sudo().search(
+                            [('code', '=', payment['payment_code'])])
+                        if journal_id:
+
+                            account_move = http.request.env['account.move'].sudo().create({
+                                'journal_id':
+                                    http.request.env['account.journal'].sudo().search([('type', '=', 'sale')])[0].id,
+                                'partner_id': partner_id.id,
+                                'partner_shipping_id': shipping_id.id,
+                            })
+
+                            if payment['amount']:
+                                payment_id = http.request.env['account.payment'].sudo().create({
+                                    'journal_id': journal_id[0].id,
+                                    'partner_id': partner_id.id,
+                                    'partner_type': 'customer',
+                                    'amount': payment['amount'],
+                                    'payment_type': 'inbound',
+                                    'payment_note': payment['payment_note'],
+                                    'communication': payment['payment_note'],
+                                    'name': account_move.name,
+                                    'payment_method_id': http.request.env['account.payment.method'].sudo().search([])[
+                                        0].id,
+                                })
+
+                                payment_id.post()
+                            else:
+                                return {'success': False, 'message': "Amount must be greater than Zero "}
+                        else:
+                            return {'success': False, 'message': "Check Payment Code"}
+
                     http.request.env['authenticate.api'].logout()
                     return {'success': True, 'message': "Success, sale order created %s" % sale_id.name}
                 else:
@@ -97,8 +135,8 @@ class AbstractMagentoApi(models.AbstractModel):
 
             magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
             magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
-            # auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo') # Localhost
-            auth_user = http.request.env['authenticate.api'].authenticate('erp', 'demo', 'demo') # test server
+            auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')  # Localhost
+            # auth_user = http.request.env['authenticate.api'].authenticate('erp', 'demo', 'demo') # test server
             if int(magento_user_id) == int(auth_user):
                 if magento_token and magento_token == kw['token']:
                     sale_id = http.request.env['sale.order'].sudo().search([('name', '=', kw['order'])])
@@ -124,7 +162,8 @@ class AbstractMagentoApi(models.AbstractModel):
                                             line.qty_done = product['qty']
                                 pick.button_validate()
                                 if pick.state != 'done':
-                                    backorder_ids = http.request.env['stock.backorder.confirmation'].sudo().search([('pick_ids', '=', pick.id)])
+                                    backorder_ids = http.request.env['stock.backorder.confirmation'].sudo().search(
+                                        [('pick_ids', '=', pick.id)])
                                     for backorder in backorder_ids:
                                         backorder.process_cancel_backorder()
                                 http.request.env['authenticate.api'].logout()
@@ -185,8 +224,8 @@ class AbstractMagentoApi(models.AbstractModel):
         magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
         magento_helpdesk_team_id = http.request.env['ir.config_parameter'].sudo().get_param(
             'base_setup.magento_helpdesk_team_id')
-        # auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
-        auth_user = http.request.env['authenticate.api'].authenticate('erp', 'demo', 'demo')
+        auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
+        # auth_user = http.request.env['authenticate.api'].authenticate('erp', 'demo', 'demo')
         if int(magento_user_id) == int(auth_user):
             if magento_token and magento_token == kw['token']:
                 sale_id = http.request.env['sale.order'].sudo().search([('name', '=', kw['order'])])
@@ -244,8 +283,8 @@ class AbstractMagentoApi(models.AbstractModel):
         magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
         magento_helpdesk_team_id = http.request.env['ir.config_parameter'].sudo().get_param(
             'base_setup.magento_helpdesk_team_id')
-        # auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
-        auth_user = http.request.env['authenticate.api'].authenticate('erp', 'demo', 'demo')
+        auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
+        # auth_user = http.request.env['authenticate.api'].authenticate('erp', 'demo', 'demo')
         if int(magento_user_id) == int(auth_user):
             if magento_helpdesk_team_id:
                 if magento_token and magento_token == kw['token']:
@@ -300,8 +339,8 @@ class AbstractMagentoApi(models.AbstractModel):
         magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
         magento_helpdesk_team_id = http.request.env['ir.config_parameter'].sudo().get_param(
             'base_setup.magento_helpdesk_team_id')
-        # auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
-        auth_user = http.request.env['authenticate.api'].authenticate('erp', 'demo', 'demo')
+        auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
+        # auth_user = http.request.env['authenticate.api'].authenticate('erp', 'demo', 'demo')
         if int(magento_user_id) == int(auth_user):
             if magento_helpdesk_team_id:
                 if magento_token and magento_token == kw['token']:
@@ -367,136 +406,141 @@ class AbstractMagentoApi(models.AbstractModel):
     # }
 
     def create_contact(self, kw):
-            # auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
-            auth_user = http.request.env['authenticate.api'].authenticate('erp', 'demo', 'demo')
-            magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
-            magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
-            is_account_prefix = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.is_account_prefix')
-            account_receive_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.account_receive_id')
-            account_payable_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.account_payable_id')
-            if int(magento_user_id) == int(auth_user):
-                if magento_token and magento_token == kw['token']:
-                    if is_account_prefix == True:
-                        last_receive_account_id = http.request.env['account.account'].search([('code', 'ilike', account_receive_id.code)], order=' id desc', limit=1)
-                        last_payable_account_id = http.request.env['account.account'].search([('code', 'ilike', account_payable_id.code)], order='id desc', limit=1)
+        auth_user = http.request.env['authenticate.api'].authenticate('odoo13', 'demo', 'demo')
+        # auth_user = http.request.env['authenticate.api'].authenticate('erp', 'demo', 'demo')
+        magento_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_user_id')
+        magento_token = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.magento_token')
+        is_account_prefix = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.is_account_prefix')
+        account_receive_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.account_receive_id')
+        account_payable_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.account_payable_id')
+        if int(magento_user_id) == int(auth_user):
+            if magento_token and magento_token == kw['token']:
+                if is_account_prefix == True:
+                    last_receive_account_id = http.request.env['account.account'].search(
+                        [('code', 'ilike', account_receive_id.code)], order=' id desc', limit=1)
+                    last_payable_account_id = http.request.env['account.account'].search(
+                        [('code', 'ilike', account_payable_id.code)], order='id desc', limit=1)
 
-                        if last_receive_account_id == account_receive_id:
-                            rec_code = int(account_receive_id.code)*10+1
-                        else:
-                            rec_code = int(last_receive_account_id.code)+1
-                        if last_payable_account_id == account_payable_id:
-                            pre_code = int(account_payable_id.code)*10+1
-                        else:
-                            pre_code = int(last_payable_account_id.code)+1
-                        account_receive_id = http.request.env['account.account'].sudo().create({
-                            'name': kw['name'],
-                            'code': rec_code,
-                            'company_id': http.request.env.user.company_id.id,
-                            'user_type_id': http.request.env['account.account.type'].sudo().search([], order='id desc', limit=1).id
-                        })
-
-                        account_payable_id = http.request.env['account.account'].sudo().create({
-                            'name': kw['name'],
-                            'code': pre_code,
-                            'company_id': http.request.env.user.company_id.id,
-                            'user_type_id': http.request.env['account.account.type'].sudo().search([], order='id desc', limit=1).id
-                        })
-                        if account_payable_id and account_receive_id:
-                            vals = {
-                                'name': kw['name'],
-                                'phone': kw['phone'],
-                                'mobile': kw['mobile'],
-                                'email': kw['email'],
-                                'company_type': 'person',
-                                'website': kw['website'],
-                                'is_sales_channel': kw['is_channel'],
-                                'channel_type': '3' if kw['channel'] == '3' else '2' if kw['channel'] == '2' else False ,
-                                'property_account_payable_id': account_receive_id.id,
-                                'property_account_receivable_id': account_payable_id,
-
-                            }
-                            new_contact = request.env['res.partner'].sudo().create(vals)
-                            if kw['address']:
-                                for address in kw['address']:
-                                    country_id = http.request.env['res.country'].sudo().search(
-                                        [('name', '=', address["country"])])
-                                    request.env['res.partner'].sudo().create({
-                                        'parent_id': new_contact.id,
-                                        'type': "delivery",
-                                        'name': address["name"],
-                                        'phone': address["phone"],
-                                        'mobile': address["mobile"],
-                                        'street': address["street"],
-                                        'city': address["city"],
-                                        'country_id': country_id,
-                                        'zip': address["zip"],
-                                        'comment': address["comment"],
-                                    })
-
-                            args= {
-                                'success':True,
-                                'message':"Success",
-                                'ID':new_contact.id,
-                            }
-                            http.request.env['authenticate.api'].logout()
-                            return args
-                        else:
-                            args = {
-                                'success': False,
-                                'message': 'Failed, Can not create account payable or account receive',
-                                'code': '201',
-                                'ID': None,
-                            }
-                            http.request.env['authenticate.api'].logout()
-                            return args
+                    if last_receive_account_id == account_receive_id:
+                        rec_code = int(account_receive_id.code) * 10 + 1
                     else:
-                            vals = {
-                                'name': kw['name'],
-                                'phone': kw['phone'],
-                                'mobile': kw['mobile'],
-                                'email': kw['email'],
-                                'company_type': 'person',
-                                'website': kw['website'],
-                                'is_sales_channel': kw['is_channel'],
-                                'channel_type': '3' if kw['channel'] == '3' else '2' if kw['channel'] == '2' else False ,
-                            }
-                            new_contact = request.env['res.partner'].sudo().create(vals)
-                            if kw['address']:
-                                for address in kw['address']:
-                                    country_id = http.request.env['res.country'].sudo().search([('name', '=', address["country"])])
-                                    request.env['res.partner'].sudo().create({
-                                        'parent_id': new_contact.id,
-                                        'type': "delivery",
-                                        'name': address["name"],
-                                        'phone': address["phone"],
-                                        'mobile': address["mobile"],
-                                        'street': address["street"],
-                                        'city': address["city"],
-                                        'country_id': country_id,
-                                        'zip': address["zip"],
-                                        'comment': address["comment"],
-                                    })
-                            args = {
-                                'success': True,
-                                'message': "Success",
-                                'ID': "Contact ID is %s " %new_contact.code,
-                            }
-                            http.request.env['authenticate.api'].logout()
-                            return args
+                        rec_code = int(last_receive_account_id.code) + 1
+                    if last_payable_account_id == account_payable_id:
+                        pre_code = int(account_payable_id.code) * 10 + 1
+                    else:
+                        pre_code = int(last_payable_account_id.code) + 1
+                    account_receive_id = http.request.env['account.account'].sudo().create({
+                        'name': kw['name'],
+                        'code': rec_code,
+                        'company_id': http.request.env.user.company_id.id,
+                        'user_type_id': http.request.env['account.account.type'].sudo().search([], order='id desc',
+                                                                                               limit=1).id
+                    })
 
+                    account_payable_id = http.request.env['account.account'].sudo().create({
+                        'name': kw['name'],
+                        'code': pre_code,
+                        'company_id': http.request.env.user.company_id.id,
+                        'user_type_id': http.request.env['account.account.type'].sudo().search([], order='id desc',
+                                                                                               limit=1).id
+                    })
+                    if account_payable_id and account_receive_id:
+                        vals = {
+                            'name': kw['name'],
+                            'phone': kw['phone'],
+                            'mobile': kw['mobile'],
+                            'email': kw['email'],
+                            'company_type': 'person',
+                            'website': kw['website'],
+                            'is_sales_channel': kw['is_channel'],
+                            'channel_type': '3' if kw['channel'] == '3' else '2' if kw['channel'] == '2' else False,
+                            'property_account_payable_id': account_receive_id.id,
+                            'property_account_receivable_id': account_payable_id,
+
+                        }
+                        new_contact = request.env['res.partner'].sudo().create(vals)
+                        if kw['address']:
+                            for address in kw['address']:
+                                country_id = http.request.env['res.country'].sudo().search(
+                                    [('name', '=', address["country"])])
+                                request.env['res.partner'].sudo().create({
+                                    'parent_id': new_contact.id,
+                                    'type': "delivery",
+                                    'name': address["name"],
+                                    'phone': address["phone"],
+                                    'mobile': address["mobile"],
+                                    'street': address["street"],
+                                    'city': address["city"],
+                                    'country_id': country_id,
+                                    'zip': address["zip"],
+                                    'comment': address["comment"],
+                                })
+
+                        args = {
+                            'success': True,
+                            'message': "Success",
+                            'ID': new_contact.id,
+                        }
+                        http.request.env['authenticate.api'].logout()
+                        return args
+                    else:
+                        args = {
+                            'success': False,
+                            'message': 'Failed, Can not create account payable or account receive',
+                            'code': '201',
+                            'ID': None,
+                        }
+                        http.request.env['authenticate.api'].logout()
+                        return args
                 else:
-                    args = {
-                        'success': False,
-                        'message': 'Failed Token error',
-                        'code': '102',
-                        'ID': None,
+                    vals = {
+                        'name': kw['name'],
+                        'phone': kw['phone'],
+                        'mobile': kw['mobile'],
+                        'email': kw['email'],
+                        'company_type': 'person',
+                        'website': kw['website'],
+                        'is_sales_channel': kw['is_channel'],
+                        'channel_type': '3' if kw['channel'] == '3' else '2' if kw['channel'] == '2' else False,
                     }
+                    new_contact = request.env['res.partner'].sudo().create(vals)
+                    if kw['address']:
+                        for address in kw['address']:
+                            country_id = http.request.env['res.country'].sudo().search(
+                                [('name', '=', address["country"])])
+                            request.env['res.partner'].sudo().create({
+                                'parent_id': new_contact.id,
+                                'type': "delivery",
+                                'name': address["name"],
+                                'phone': address["phone"],
+                                'mobile': address["mobile"],
+                                'street': address["street"],
+                                'city': address["city"],
+                                'country_id': country_id,
+                                'zip': address["zip"],
+                                'comment': address["comment"],
+                            })
+                    args = {
+                        'success': True,
+                        'message': "Success",
+                        'ID': "Contact ID is %s " % new_contact.code,
+                    }
+                    http.request.env['authenticate.api'].logout()
+                    return args
+
             else:
                 args = {
                     'success': False,
-                    'message': 'Please, Contact Administrator to Allow Magento Setting User',
-                    'code': '1000002',
+                    'message': 'Failed Token error',
+                    'code': '102',
                     'ID': None,
                 }
-            http.request.env['authenticate.api'].logout()
-            return args
+        else:
+            args = {
+                'success': False,
+                'message': 'Please, Contact Administrator to Allow Magento Setting User',
+                'code': '1000002',
+                'ID': None,
+            }
+        http.request.env['authenticate.api'].logout()
+        return args
