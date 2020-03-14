@@ -93,6 +93,7 @@ class AbstractMagentoApi(models.AbstractModel):
                                         0].id,
                                 })
 
+
                                 payment_id.post()
                             else:
                                 return {'success': False, 'message': "Amount must be greater than Zero "}
