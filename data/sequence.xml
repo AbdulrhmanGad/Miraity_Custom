@@ -30,6 +30,12 @@
             <field name="prefix">JNR</field>
             <field name="padding">4</field>
         </record>
+        <record id="product_categoory_sequence" model="ir.sequence">
+            <field name="name">product.category</field>
+            <field name="code">product.category</field>
+            <field name="prefix">cat</field>
+            <field name="padding">4</field>
+        </record>
 
     </data>
 </odoo>
