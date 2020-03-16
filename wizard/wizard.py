@@ -21,19 +21,15 @@ class MissingProductSku(models.TransientModel):
             product_ids = self.env['product.template'].search([('sku_no', '=', False)])
             for product in product_ids:
                 if product.categ_id.parent_id and product.seller_ids:
-                    print(">>>>>>>>>1>>>>>>>>>")
                     if product.seller_ids[0] and product.seller_ids[0].name.code2 != False :
-                        print(">>>>>>>>>>2>>>>>>>>")
                         seq = product.categ_id.product_count
                         if product.seller_ids[0].name.code3 == 0:
-                            print(">>>>>>3>>>>>>>>>>>>")
                             product.seller_ids[0].name.code3 = 1
                         product.sku_no = short_description.upper() + \
                                          str(product.categ_id.parent_id.parent_id.name[:1]) + \
                                          str(product.categ_id.parent_id.name[:1]) + \
-                                         str(product.categ_id.name[:1]) +\
+                                         str(product.categ_id.name[:1]) + \
                                          product.seller_ids[0].name.code2 + \
-                                         str(seq).zfill(4) + \
                                          str(product.seller_ids[0].name.code3).zfill(4)
 
                         product.categ_id.product_count += 1
