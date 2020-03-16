@@ -31,8 +31,8 @@
                     </button>
                 </xpath>
 
-
             </field>
         </record>
+
     </data>
 </odoo>

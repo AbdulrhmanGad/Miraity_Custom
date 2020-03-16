@@ -21,9 +21,12 @@ class MissingProductSku(models.TransientModel):
             product_ids = self.env['product.template'].search([('sku_no', '=', False)])
             for product in product_ids:
                 if product.categ_id.parent_id and product.seller_ids:
+                    print(">>>>>>>>>1>>>>>>>>>")
                     if product.seller_ids[0] and product.seller_ids[0].name.code2 != False :
+                        print(">>>>>>>>>>2>>>>>>>>")
                         seq = product.categ_id.product_count
                         if product.seller_ids[0].name.code3 == 0:
+                            print(">>>>>>3>>>>>>>>>>>>")
                             product.seller_ids[0].name.code3 = 1
                         product.sku_no = short_description.upper() + \
                                          str(product.categ_id.parent_id.parent_id.name[:1]) + \
@@ -57,7 +60,7 @@ class ContactMissCode(models.TransientModel):
 
             contact2_ids = self.env['res.partner'].search([('code2', '=', False)])
             for contact in contact2_ids:
-                if contact.is_vendor:
+                if contact.supplier_rank:
                     code2 = self.env['ir.sequence'].next_by_code('res.partner') or '/'
                     contact.code2 = str(code2)
         return {'type': 'ir.actions.act_window_close'}

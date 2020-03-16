@@ -120,3 +120,5 @@ class RelatedPartnerCheque(models.Model):
     partner_id = fields.Many2one(comodel_name="res.partner", track_visibility='onchange')
     value = fields.Float(string="Value", track_visibility='onchange')
     date = fields.Date(string="Date", track_visibility='onchange')
+    today = fields.Date(string="Date", required=True, default=date.today(), track_visibility='onchange', readonly=True)
+

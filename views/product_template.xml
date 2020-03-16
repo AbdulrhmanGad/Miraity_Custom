@@ -10,9 +10,10 @@
                     <field name="ar_name"/>
                     <field name="sku_no"/>
                     <field name="qty_available"/>
-                    <field name="ready_test_qty"/>
-                    <field name="magento_qty"/>
-                    <field name="magento_test_qty"/>
+                    <field name="type" invisible="1"/>
+                    <field name="ready_test_qty" attrs="{'invisible': [('type', '!=', 'product')]}" />
+                    <field name="magento_qty" attrs="{'invisible': [('type', '!=', 'product')]}" />
+                    <field name="magento_test_qty" attrs="{'invisible': [('type', '!=', 'product')]}" />
                 </tree>
             </field>
         </record>
@@ -46,23 +47,24 @@
                     </button>
                 </div>
                 <xpath expr="//field[@name='barcode']" position="after">
-                    <field name='brand_id'/>
+                    <field name='brand_id' groups="stock.group_stock_manager"/>
                     <field name='sku_no'/>
-                    <field name='ready_test_qty' invisible="1"/>
-                    <field name='magento_qty' invisible="1"/>
-                    <field name='magento_test_qty' invisible="1"/>
+                    <field name="ready_test_qty"  attrs="{'invisible': [('type', '!=', 'product')]}" />
+                    <field name="magento_qty" groups="Miraity_Custom.group_stock_magento_user" attrs="{'invisible': [('type', '!=', 'product')]}" />
+                    <field name="magento_test_qty" groups="Miraity_Custom.group_stock_magento_user" attrs="{'invisible': [('type', '!=', 'product')]}" />
                     <field name='e_commerce'/>
                     <field name='active'/>
-                    <field name='is_gift'/>
+                    <field name='is_gift' attrs="{'invisible': [('type', '!=', 'product')]}" groups="stock.group_stock_manager" />
                 </xpath>
 
                 <xpath expr="//notebook" position="inside">
                     <page name="review" string="Review">
-                        <field name="review_ids" readonly="1">
+                        <field name="review_ids" groups="stock.group_stock_manager" readonly="1">
                             <tree>
                                 <field name="partner_id" />
                                 <field name="review" />
                                 <field name="is_sale_channel" />
+                                <field name="note" />
                             </tree>
                         </field>
                     </page>
@@ -104,7 +106,7 @@
             <field name="inherit_id" ref="product.product_template_search_view"/>
             <field name="arch" type="xml">
                 <field name="name" position="after">
-                    <field name="brand_id"/>
+                    <field name="brand_id" groups="stock.group_stock_manager"/>
                     <field name="sku_no"/>
                     <filter string="Brand" name="group by_brand" domain="[]"
                             context="{'group_by' : 'brand_id'}"/>

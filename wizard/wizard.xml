@@ -9,17 +9,17 @@
                 context="{
             'default_res_ids': active_ids,
             }"
-                groups="base.group_partner_manager"/>
+                groups="stock.group_stock_manager"/>
     <act_window id="update_product_to_magento"
                 name="Update To Magento"
                 binding_model="product.template"
                 res_model="miss.product.sku"
+                groups="Miraity_Custom.group_stock_magento_user"
                 view_mode="form" target="new"
                 context="{
             'default_res_ids': active_ids,
             'default_to_magento': True,
-            }"
-                groups="base.group_partner_manager"/>
+            }" />
 
     <record id="product_wizard_view" model="ir.ui.view">
         <field name="name">Missing Product Sku</field>
