@@ -5,9 +5,11 @@ from odoo.exceptions import ValidationError
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    code = fields.Char(string="Code", readonly=True)
-    code2 = fields.Char(string="Code2", readonly=True)
-    code3 = fields.Integer(string="Code3", readonly=True)
+    code = fields.Char(string="Internal Reference", readonly=True)
+    supplier_no = fields.Char(string="Supplier No", readonly=True)
+    code2 = fields.Char(string="Code2", readonly=True)  # will remove
+    code3 = fields.Integer(string="Code3", readonly=True)  # will remove
+    products_count = fields.Integer(string="products count", readonly=True)
     is_sales_channel = fields.Boolean(string="Sales Channel", )
     is_customer = fields.Boolean(string="Customer", )
     is_vendor = fields.Boolean(string="vendor", )
@@ -76,8 +78,8 @@ class ResPartner(models.Model):
         args = args or []
         domain = []
         if name:
-            domain = ['|', '|', '|', '|', ('mobile', '=ilike', name), ('email', '=ilike', name),
-                      ('name', '=ilike', name), ('phone', operator, name), ('code', operator, name)]
+            domain = ['|', '|', '|', '|', ('mobile', operator, name), ('email', operator, name),
+                      ('name', operator, name), ('phone', operator, name), ('code', operator, name)]
         results = self.search(domain + args, limit=limit)
         return results.name_get()
 

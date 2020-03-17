@@ -21,19 +21,24 @@ class MissingProductSku(models.TransientModel):
             product_ids = self.env['product.template'].search([('sku_no', '=', False)])
             for product in product_ids:
                 if product.categ_id.parent_id and product.seller_ids:
-                    if product.seller_ids[0] and product.seller_ids[0].name.code2 != False :
+                    if product.seller_ids[0] and product.seller_ids[0].name.supplier_no != False:
                         seq = product.categ_id.product_count
-                        if product.seller_ids[0].name.code3 == 0:
-                            product.seller_ids[0].name.code3 = 1
-                        product.sku_no = short_description.upper() + \
-                                         str(product.categ_id.parent_id.parent_id.name[:1]) + \
-                                         str(product.categ_id.parent_id.name[:1]) + \
-                                         str(product.categ_id.name[:1]) + \
-                                         product.seller_ids[0].name.code2 + \
-                                         str(product.seller_ids[0].name.code3).zfill(4)
+                        if product.seller_ids[0].name.products_count == 0:
+                            product.seller_ids[0].name.products_count = 1
+                        print(">>>>>>>>>", product.categ_id.parent_id.parent_id.short_name)
+                        print(">>>>>>>>>", product.categ_id.parent_id.short_name)
+                        print(">>>>>>>>>", product.categ_id.short_name)
+                        if product.categ_id.parent_id.parent_id and product.categ_id.short_name and\
+                            product.categ_id.parent_id.short_name and product.categ_id.parent_id.parent_id.short_name:
+                            product.sku_no = short_description.upper() + \
+                                 str(product.categ_id.parent_id.parent_id.short_name[:1]) + \
+                                 str(product.categ_id.parent_id.short_name[:1]) + \
+                                 str(product.categ_id.short_name[:1]) + \
+                                 product.seller_ids[0].name.supplier_no + \
+                                 str(product.seller_ids[0].name.products_count).zfill(4)
 
                         product.categ_id.product_count += 1
-                        product.seller_ids[0].name.code3 += 1
+                        product.seller_ids[0].name.products_count += 1
                 if rec.to_magento:
                     pass
         return {'type': 'ir.actions.act_window_close'}
@@ -54,9 +59,9 @@ class ContactMissCode(models.TransientModel):
                 contact.code = 'CT' + str(seq).zfill(4)
                 self.env.user.company_id.partner_count += 1
 
-            contact2_ids = self.env['res.partner'].search([('code2', '=', False)])
+            contact2_ids = self.env['res.partner'].search([('supplier_no', '=', False)])
             for contact in contact2_ids:
                 if contact.supplier_rank:
-                    code2 = self.env['ir.sequence'].next_by_code('res.partner') or '/'
-                    contact.code2 = str(code2)
+                    supplier_no = self.env['ir.sequence'].next_by_code('res.partner') or '/'
+                    contact.supplier_no = str(supplier_no)
         return {'type': 'ir.actions.act_window_close'}
