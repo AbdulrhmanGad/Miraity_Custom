@@ -64,7 +64,6 @@ class AbstractMagentoApi(models.AbstractModel):
                         })
                     sale_id.action_confirm()
                     invoice = sale_id._create_invoices()
-                    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>", invoice)
                     invoice.action_post()
 
                     for payment in kw['payments']:
