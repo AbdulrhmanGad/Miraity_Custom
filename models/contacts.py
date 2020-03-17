@@ -65,10 +65,10 @@ class ResPartner(models.Model):
     def create(self, values):
         if self.env.user.company_id:
             sequence = self.env.user.company_id.partner_count
-            code2 = self.env['ir.sequence'].next_by_code('res.partner') or '/'
+            supplier_no = self.env['ir.sequence'].next_by_code('res.partner') or '/'
             seq = sequence + 1
             values['code'] = 'CT' + str(seq).zfill(4)
-            values['code2'] = str(code2)
+            values['supplier_no'] = str(supplier_no)
             self.env.user.company_id.partner_count += 1
         return super(ResPartner, self).create(values)
 

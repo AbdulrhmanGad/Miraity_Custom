@@ -17,6 +17,7 @@
 
                 <xpath expr="//field[@name='type']" position="before">
                     <field name="code"/>
+                    <field name="supplier_no"/>
                 </xpath>
 
                 <xpath expr="//field[@name='property_stock_customer']/../.." position="after">
