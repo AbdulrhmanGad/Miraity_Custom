@@ -26,6 +26,7 @@
         'views/account.xml',
         'wizard/wizard.xml',
         'wizard/purchase.xml',
+        'wizard/category.xml',
     ],
     'images': ['static/description/icon.png'],
     'installable': True,

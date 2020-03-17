@@ -11,9 +11,9 @@
                     <field name="sku_no"/>
                     <field name="qty_available"/>
                     <field name="type" invisible="1"/>
-                    <field name="ready_test_qty" attrs="{'invisible': [('type', '!=', 'product')]}" />
-                    <field name="magento_qty" attrs="{'invisible': [('type', '!=', 'product')]}" />
-                    <field name="magento_test_qty" attrs="{'invisible': [('type', '!=', 'product')]}" />
+                    <field name="ready_test_qty" attrs="{'invisible': [('type', '!=', 'product')]}"/>
+                    <field name="magento_qty" attrs="{'invisible': [('type', '!=', 'product')]}"/>
+                    <field name="magento_test_qty" attrs="{'invisible': [('type', '!=', 'product')]}"/>
                 </tree>
             </field>
         </record>
@@ -49,22 +49,25 @@
                 <xpath expr="//field[@name='barcode']" position="after">
                     <field name='brand_id' groups="stock.group_stock_manager"/>
                     <field name='sku_no'/>
-                    <field name="ready_test_qty"  attrs="{'invisible': [('type', '!=', 'product')]}" />
-                    <field name="magento_qty" groups="Miraity_Custom.group_stock_magento_user" attrs="{'invisible': [('type', '!=', 'product')]}" />
-                    <field name="magento_test_qty" groups="Miraity_Custom.group_stock_magento_user" attrs="{'invisible': [('type', '!=', 'product')]}" />
+                    <field name="ready_test_qty" attrs="{'invisible': [('type', '!=', 'product')]}"/>
+                    <field name="magento_qty" groups="Miraity_Custom.group_stock_magento_user"
+                           attrs="{'invisible': [('type', '!=', 'product')]}"/>
+                    <field name="magento_test_qty" groups="Miraity_Custom.group_stock_magento_user"
+                           attrs="{'invisible': [('type', '!=', 'product')]}"/>
                     <field name='e_commerce'/>
                     <field name='active'/>
-                    <field name='is_gift' attrs="{'invisible': [('type', '!=', 'product')]}" groups="stock.group_stock_manager" />
+                    <field name='is_gift' attrs="{'invisible': [('type', '!=', 'product')]}"
+                           groups="stock.group_stock_manager"/>
                 </xpath>
 
                 <xpath expr="//notebook" position="inside">
                     <page name="review" string="Review">
                         <field name="review_ids" groups="stock.group_stock_manager" readonly="1">
                             <tree>
-                                <field name="partner_id" />
-                                <field name="review" />
-                                <field name="is_sale_channel" />
-                                <field name="note" />
+                                <field name="partner_id"/>
+                                <field name="review"/>
+                                <field name="is_sale_channel"/>
+                                <field name="note"/>
                             </tree>
                         </field>
                     </page>
@@ -77,6 +80,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">product.template</field>
             <field name="domain">[('e_commerce', '=', True)]</field>
+            <field name="context">{'default_e_commerce' : True}</field>
             <field name="view_mode">kanban,tree,form</field>
             <field name="view_ids"
                    eval="[(5, 0, 0),
