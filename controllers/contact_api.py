@@ -206,9 +206,7 @@ class AbstractContactApi(models.AbstractModel):
                 if partner_id:
                     if partner_id.is_sales_channel == True:
                         # try:
-                            print(">>>>>>>>>>>>>", type(kw['value']))
                             float(kw['value'])
-                            print(">>>>>>>>>>>>>", type(kw['value']))
                             # users = http.request.env.ref('account.group_account_manager')
                             http.request.env['partner.related.cheque'].sudo().create({
                                 'partner_id': partner_id.id,

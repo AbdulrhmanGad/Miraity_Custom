@@ -13,5 +13,4 @@ class PurchaseOrderWizard(models.TransientModel):
     res_ids = fields.Many2many(comodel_name="purchase.order", )
 
     def action_apply(self):
-        print(">>>>>>>purchase", self.res_ids)
         return {'type': 'ir.actions.act_window_close'}

@@ -10,7 +10,6 @@ class Stock(http.Controller):
     # {"jsonrpc": "2.0","params":{"token": "MIR123456789","name":"Abdulrhman"}}
     @http.route('/create/stock', type='json', auth='public')
     def create_stock(self, **kw):
-        print(">>>>>>>>>>>>>>>>", kw)
         model = http.request.env['call.center.api']
         response = model.create_stock(kw)
         print(response)
