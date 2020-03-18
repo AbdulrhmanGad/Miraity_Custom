@@ -21,6 +21,16 @@ class ProductTemplate(models.Model):
         return [(template.id, '%s%s' % (template.sku_no and '[%s] ' % template.sku_no or '', template.name))
                 for template in self]
 
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        super(ProductTemplate, self).name_search(name)
+        args = args or []
+        domain = []
+        if name:
+            domain = ['|', '|',('sku_no', operator, name), ('name', operator, name), ('default_code', operator, name)]
+        results = self.search(domain + args, limit=limit)
+        return results.name_get()
+
     # def get_first_child(self, categ_id):
     #     if categ_id.parent_id.parent_id:
     #         self.get_first_child(categ_id.parent_id)

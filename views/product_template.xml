@@ -27,7 +27,6 @@
                     <label for="ar_name" string="Arabic Name" class="oe_edit_only"/>
                     <field name="ar_name"/>
                 </xpath>
-
                 <div name="button_box" position="inside">
                     <button type="action" class="oe_stat_button" icon="fa-play-circle-o">
                         <div class="o_field_widget o_stat_info">
@@ -46,14 +45,15 @@
                         </div>
                     </button>
                 </div>
+
                 <xpath expr="//field[@name='barcode']" position="after">
                     <field name='brand_id' groups="stock.group_stock_manager"/>
                     <field name='sku_no'/>
-                    <field name="ready_test_qty" attrs="{'invisible': [('type', '!=', 'product')]}"/>
-                    <field name="magento_qty" groups="Miraity_Custom.group_stock_magento_user"
-                           attrs="{'invisible': [('type', '!=', 'product')]}"/>
-                    <field name="magento_test_qty" groups="Miraity_Custom.group_stock_magento_user"
-                           attrs="{'invisible': [('type', '!=', 'product')]}"/>
+                    <!--                    <field name="ready_test_qty" attrs="{'invisible': [('type', '!=', 'product')]}"/>-->
+                    <!--                    <field name="magento_qty" groups="Miraity_Custom.group_stock_magento_user"-->
+                    <!--                           attrs="{'invisible': [('type', '!=', 'product')]}"/>-->
+                    <!--                    <field name="magento_test_qty" groups="Miraity_Custom.group_stock_magento_user"-->
+                    <!--                           attrs="{'invisible': [('type', '!=', 'product')]}"/>-->
                     <field name='e_commerce'/>
                     <field name='active'/>
                     <field name='is_gift' attrs="{'invisible': [('type', '!=', 'product')]}"
@@ -120,7 +120,6 @@
                 </field>
             </field>
         </record>
-
 
     </data>
 </odoo>

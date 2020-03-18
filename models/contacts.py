@@ -32,6 +32,13 @@ class ResPartner(models.Model):
     balance_all = fields.Float(string="Balance All", )
     balance_paid = fields.Float(string="Balance Paid", )
     balance_pending = fields.Float(string="Balance Pending", )
+    
+    @api.constrains('partner_related_ids', 'partner_related_ids.related_partner_id')
+    def _constrains_partner_related_ids(self):
+        for rec in self:
+            for line in rec.partner_related_ids:
+                if line.related_partner_id == rec:
+                    raise ValidationError(_("Related Partner Can not be Current Contact"))
 
     @api.onchange('is_customer')
     def _onchange_is_customer(self):
@@ -61,14 +68,17 @@ class ResPartner(models.Model):
 
     @api.model
     def create(self, values):
+        res = super(ResPartner, self).create(values)
         if self.env.user.company_id:
             sequence = self.env.user.company_id.partner_count
-            supplier_no = self.env['ir.sequence'].next_by_code('res.partner') or '/'
             seq = sequence + 1
             values['code'] = 'CT' + str(seq).zfill(4)
-            values['supplier_no'] = str(supplier_no)
+            if 'supplier_rank' in values:
+                supplier_no = self.env['ir.sequence'].next_by_code('res.partner') or '/'
+                self.supplier_no = str(supplier_no)
+                res['supplier_no'] = str(supplier_no)
             self.env.user.company_id.partner_count += 1
-        return super(ResPartner, self).create(values)
+        return res
 
     @api.model
     def name_search(self, name, args=None, operator='ilike', limit=100):
