@@ -56,14 +56,16 @@ class ContactMissCode(models.TransientModel):
         for rec in self:
             contact_ids = self.env['res.partner'].search([('code', '=', False)])
             for contact in contact_ids:
-                sequence = self.env.user.company_id.partner_count
-                seq = sequence + 1
-                contact.code = 'CT' + str(seq).zfill(4)
+                # sequence = self.env.user.company_id.partner_count
+                # seq = sequence + 1
+
+                contact.code = 'CT' + str(contact.check_partner_code(randint(0, 999999))).zfill(6)
                 self.env.user.company_id.partner_count += 1
 
             contact2_ids = self.env['res.partner'].search([('supplier_no', '=', False)])
             for contact in contact2_ids:
                 if contact.supplier_rank:
-                    supplier_no = self.env['ir.sequence'].next_by_code('res.partner') or '/'
+                    # supplier_no = self.env['ir.sequence'].next_by_code('res.partner') or '/'
+                    supplier_no = str(contact.check_supplier_no(randint(0, 9999))).zfill(4)
                     contact.supplier_no = str(supplier_no)
         return {'type': 'ir.actions.act_window_close'}

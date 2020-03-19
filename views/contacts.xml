@@ -27,6 +27,7 @@
                 </xpath>
 
                 <xpath expr="//field[@name='type']" position="before">
+                    <button name="delelte_partner_codes" class="oe_highlight" type="object" string="Delete all codes"/>
                     <field name="code"/>
                 </xpath>
 
