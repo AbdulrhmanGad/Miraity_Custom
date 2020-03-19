@@ -4,6 +4,7 @@ from odoo import api, fields, models
 class ProductProduct(models.Model):
     _inherit = 'product.product'
 
+
     def name_get(self):
         # Prefetch the fields used by the `name_get`, so `browse` doesn't fetch other fields
         self.browse(self.ids).read(['name', 'sku_no'])
@@ -23,6 +24,12 @@ class ProductProduct(models.Model):
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
+
+
+    def delelte_all_sku(self):
+        for rec in self:
+            for line in rec.env['product.product'].search([]):
+                line.sku_no = False
 
     ar_name = fields.Char('Arabic Brand Name')
     brand_id = fields.Many2one('product.brand', string='Brand', help='Select a brand for this product')
