@@ -46,16 +46,17 @@ class ResPartner(models.Model):
     vendor_product_ids = fields.One2many(comodel_name="product.supplierinfo", inverse_name="name",
                                          string="Vendor related Product")
 
-    products_count = fields.Integer(string="products count",compute="_compute_products_count")
+    products_count = fields.Integer(string="products count" )
+    product_count = fields.Integer(string="products count",compute="_compute_product_count")
 
     @api.depends('vendor_product_ids')
-    def _compute_products_count(self):
+    def _compute_product_count(self):
         for rec in self:
             products = []
             for line in rec.vendor_product_ids:
                 if line.name == rec:
                     products.append(line.product_tmpl_id.id)
-            rec.products_count = len(products)
+            rec.product_count = len(products)
 
     def action_view_products(self):
         for rec in self:

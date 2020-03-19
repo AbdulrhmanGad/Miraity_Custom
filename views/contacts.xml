@@ -11,8 +11,8 @@
                             class="oe_stat_button"
                             icon="fa-product-hunt"
                             string="Products"
-                            attrs="{'invisible': [('products_count', '=', 0)]}" groups="base.group_user">
-                        <field name="products_count" widget="statinfo" string="Products"/>
+                            attrs="{'invisible': [('product_count', '=', 0)]}" groups="base.group_user">
+                        <field name="product_count" widget="statinfo" string="Products"/>
                     </button>
 
                 </div>

@@ -6,6 +6,7 @@ from odoo.tools.translate import _
 from odoo.tools import email_split
 from odoo.exceptions import UserError
 from odoo import api, fields, models
+from random import randint
 
 
 class MissingProductSku(models.TransientModel):
@@ -27,13 +28,17 @@ class MissingProductSku(models.TransientModel):
                             product.seller_ids[0].name.products_count = 1
                         if product.categ_id.parent_id.parent_id and product.categ_id.short_name and\
                             product.categ_id.parent_id.short_name and product.categ_id.parent_id.parent_id.short_name:
-                            product.sku_no = short_description.upper() + \
+                            sku_no = short_description.upper() + \
                                  str(product.categ_id.parent_id.parent_id.short_name[:1]) + \
                                  str(product.categ_id.parent_id.short_name[:1]) + \
                                  str(product.categ_id.short_name[:1]) + \
                                  product.seller_ids[0].name.supplier_no + \
-                                 str(product.seller_ids[0].name.products_count).zfill(4)
-
+                                 str(randint(0, 9999)).zfill(4)
+                            product_id = self.env['product.product'].search([('sku_no', '=', sku_no)])
+                            if product_id:
+                                self.action_apply()
+                            else:
+                                product.sku_no = sku_no
                         product.categ_id.product_count += 1
                         product.seller_ids[0].name.products_count += 1
                 if rec.to_magento:
