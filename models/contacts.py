@@ -1,5 +1,6 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
+from random import randint
 
 
 class ResPartner(models.Model):
@@ -113,17 +114,36 @@ class ResPartner(models.Model):
             # if rec.channel_type == '2' or rec.channel_type == '3' and rec.is_sales_channel == False:
             #     raise ValidationError(_("Contact must be sales channel"))
 
+    def random_number(n):
+        range_start = 10 ** (n - 1)
+        range_end = (10 ** n) - 1
+        return randint(range_start, range_end)
+
+    def check_partner_code(self, code):
+        partner_ids = self.env['res.partner'].search([('code', '=', code)])
+        while len(partner_ids) >= 1:
+            code = self.random_number(6)
+            self.check_partner(code)
+        return code
+
+    def check_supplier_no(self, code):
+        partner_ids = self.env['res.partner'].search([('supplier_no', '=', code)])
+        while len(partner_ids) >= 1:
+            code = self.random_number(4)
+            self.check_partner(code)
+        return code
+
     @api.model
     def create(self, values):
         res = super(ResPartner, self).create(values)
         if self.env.user.company_id:
-            sequence = self.env.user.company_id.partner_count
-            seq = sequence + 1
-            values['code'] = 'CT' + str(seq).zfill(4)
-            if 'supplier_rank' in values:
-                supplier_no = self.env['ir.sequence'].next_by_code('res.partner') or '/'
-                self.supplier_no = str(supplier_no)
-                res['supplier_no'] = str(supplier_no)
+            # sequence = self.env.user.company_id.partner_count
+            # seq = sequence + 1
+
+            res['code'] = 'CT' + str(self.check_partner_code(randint(0, 999999))).zfill(6)
+            if 'supplier_rank' in res:
+                # supplier_no = self.env['ir.sequence'].next_by_code('res.partner') or '/'
+                res['supplier_no'] = str(self.check_supplier_no(randint(0, 9999))).zfill(4)
             self.env.user.company_id.partner_count += 1
         return res
 
