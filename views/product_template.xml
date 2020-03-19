@@ -48,7 +48,7 @@
 
                 <xpath expr="//field[@name='barcode']" position="after">
                     <field name='brand_id' groups="stock.group_stock_manager"/>
-                    <button name="delelte_all_sku" class="oe_highlight" type="object" string="Delete all SKU"/>
+<!--                    <button name="delelte_all_sku" class="oe_highlight" type="object" string="Delete all SKU"/>-->
                     <field name='sku_no'/>
                     <!--                    <field name="ready_test_qty" attrs="{'invisible': [('type', '!=', 'product')]}"/>-->
                     <!--                    <field name="magento_qty" groups="Miraity_Custom.group_stock_magento_user"-->

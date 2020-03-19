@@ -6,6 +6,12 @@ from random import randint
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
+    def delelte_partner_codes(self):
+        for rec in self:
+            for line in rec.env['res.partner'].search([]):
+                line.supplier_no = False
+                line.code = False
+
     code = fields.Char(string="Internal Reference", readonly=True)
     supplier_no = fields.Char(string="Supplier No", readonly=True)
     is_sales_channel = fields.Boolean(string="Sales Channel", )
