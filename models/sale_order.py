@@ -6,20 +6,22 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     state = fields.Selection([
-        ('draft', 'Quotation'),
+        ('draft', 'Draft'),
+        ('sale', 'Approved'),
         ('sent', 'Quotation Sent'),
         ('picking', 'Picking'),
         ('packing', 'Packing'),
         ('delivery', 'On Delivery'),
-        ('delivered', 'Delivered'),
-        ('sale', 'Sales Order'),
-        ('done', 'done'),  # Is was ('done', 'Locked'), Abdulrhman Changed IT
-        ('cancel_request', 'Cancel Request'),
         ('reschedule', 'Reschedule'),
+        ('cancel_request', 'Cancel Request'),
         ('cancel', 'Cancelled'),
+        ('delivered', 'Delivered'),
+        ('close', 'Closed'),
+        ('done', 'done'),  # Is was ('done', 'Locked'), Abdulrhman Changed IT
     ], string='Status', readonly=True, copy=False, index=True, tracking=3, default='draft')
     miraity_type = fields.Selection(string="Miraity Type", selection=[('celebrity', 'Celebrity'),
                                                                       ('gift', 'Gift'),
+                                                                      ('replacement', 'Replacement'),
                                                                       ])
     is_sales_channel = fields.Boolean(related="partner_id.is_sales_channel")
     shipping_no = fields.Char(string="Shipping No", )

@@ -15,7 +15,7 @@
         <record id="helpdesk_tickt_sequence" model="ir.sequence">
             <field name="name">helpdesk.ticket</field>
             <field name="code">helpdesk.ticket</field>
-            <field name="prefix">TKT</field>
+            <field name="prefix">20133</field>
             <field name="padding">4</field>
         </record>
         <record id="partner_code2_sequence" model="ir.sequence">

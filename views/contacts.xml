@@ -5,13 +5,24 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
+                <div name="button_box" position="inside">
+                    <button type="object"
+                            name="action_view_products"
+                            class="oe_stat_button"
+                            icon="fa-product-hunt"
+                            string="Products"
+                            attrs="{'invisible': [('products_count', '=', 0)]}" groups="base.group_user">
+                        <field name="products_count" widget="statinfo" string="Products"/>
+                    </button>
 
+                </div>
                 <xpath expr="//group[@name='sale']//field[@name='user_id']" position="before">
                     <field name="is_customer" invisible="1"/>
                 </xpath>
                 <xpath expr="//field[@name='property_supplier_payment_term_id']" position="before">
                     <field name="is_vendor" invisible="1"/>
-                    <field name="supplier_no" invisible="0"/>  <!-- attrs="{'invisible': [('is_vendor', '=', False)]}" -->
+                    <field name="supplier_no"
+                           invisible="0"/>  <!-- attrs="{'invisible': [('is_vendor', '=', False)]}" -->
                     <field name="products_count" invisible="1"/>
                 </xpath>
 
@@ -24,8 +35,23 @@
                         <group>
                             <field name="is_sales_channel"/>
                             <field name="channel_type" attrs="{'readonly': [('is_sales_channel', '=', False)]}"/>
+                            <field name="liability_account_id"/>
                         </group>
                     </group>
+                    <group string="Contract Data">
+                        <group>
+                            <field name="contract_period"/>
+                            <field name="company_percentage"/>
+                            <field name="po_sample"/>
+                            <field name="sample_marketing"/>
+                            <field name="order_prepare_time"/>
+                            <field name="return_before_expiry"/>
+                        </group>
+                    </group>
+                </xpath>
+
+                <xpath expr="//field[@name='vat']" position="after">
+                    <field name="commercial_reg"/>
                 </xpath>
                 <xpath expr="//notebook" position="inside">
                     <page string="Sales Channels" attrs="{'invisible': [('is_sales_channel', '=', False)]}"
@@ -114,26 +140,6 @@
         </record>
 
         <!-- Not Develop Yet-->
-<!--        <record id="mir_add_samrt_button_for_contact_product" model="ir.ui.view">-->
-<!--            <field name="name">view.inherit.res.partner.form</field>-->
-<!--            <field name="model">res.partner</field>-->
-<!--            <field name="inherit_id" ref="sale.res_partner_view_buttons"/>-->
-<!--            <field name="arch" type="xml">-->
-
-<!--                <xpath expr="//field[@name='sale_order_count']/.." position="after">-->
-<!--                    <button type="object"-->
-<!--                            name="action_view_products"-->
-<!--                            class="oe_stat_button"-->
-<!--                            icon="fa-ticket "-->
-<!--                            attrs="{'invisible': [('products_count', '=', 0)]}" groups="base.group_user">-->
-<!--                        <field name="products_count" widget="statinfo" string="Ticket"/>-->
-<!--                    </button>-->
-
-<!--                </xpath>-->
-
-
-<!--            </field>-->
-<!--        </record>-->
 
         <record id="view_contact_search_code" model="ir.ui.view">
             <field name="name">res.partner</field>
