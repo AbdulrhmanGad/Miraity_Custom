@@ -152,7 +152,6 @@ class ResPartner(models.Model):
                 # supplier_no = self.env['ir.sequence'].next_by_code('res.partner') or '/'
                 res['supplier_no'] = str(self.check_supplier_no(randint(0, 9999))).zfill(4)
             self.env.user.company_id.partner_count += 1
-
         return res
 
     @api.model
