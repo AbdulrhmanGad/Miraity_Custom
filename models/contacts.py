@@ -7,8 +7,8 @@ class ResPartner(models.Model):
 
     code = fields.Char(string="Internal Reference", readonly=True)
     supplier_no = fields.Char(string="Supplier No", readonly=True)
-    products_count = fields.Integer(string="products count", readonly=True)
     is_sales_channel = fields.Boolean(string="Sales Channel", )
+    liability_account_id = fields.Many2one(comodel_name="account.account", string="Liability Account")
     is_customer = fields.Boolean(string="Customer", )
     is_vendor = fields.Boolean(string="vendor", )
     is_commission = fields.Boolean(string="Commission", )
@@ -26,13 +26,60 @@ class ResPartner(models.Model):
                                                               ('2', 'Celebrity'),
                                                               ('3', 'Makeup Artist'),
                                                               ], )
-    order_all = fields.Float(string="Order All", )
+    order_all = fields.Float(string="Order All", compute="_compute_orders")
     order_paid = fields.Float(string="Order Paid", )
-    order_pending = fields.Float(string="Order Pending", )
+    order_pending = fields.Float(string="Order Pending")
     balance_all = fields.Float(string="Balance All", )
     balance_paid = fields.Float(string="Balance Paid", )
     balance_pending = fields.Float(string="Balance Pending", )
-    
+    sale_order_line_ids = fields.One2many(comodel_name="sale.order.line", inverse_name="celebrity_id", )
+
+    contract_period = fields.Integer(string="Contract Period", size=2)
+    company_percentage = fields.Integer(string="Company Percentage", size=2)
+    po_sample = fields.Integer(string="Purchase Order Samples - per product", size=2)
+    sample_marketing = fields.Integer(string="1st samples for marketing - per product", size=3)
+    order_prepare_time = fields.Integer(string="order preparation time  - with days", size=3)
+    return_before_expiry = fields.Integer(string="return before expiry - with days", size=3)
+    commercial_reg = fields.Char(string="Commercial REG")
+
+    vendor_product_ids = fields.One2many(comodel_name="product.supplierinfo", inverse_name="name",
+                                         string="Vendor related Product")
+
+    products_count = fields.Integer(string="products count",compute="_compute_products_count")
+
+    @api.depends('vendor_product_ids')
+    def _compute_products_count(self):
+        for rec in self:
+            products = []
+            for line in rec.vendor_product_ids:
+                if line.name == rec:
+                    products.append(line.product_tmpl_id.id)
+            rec.products_count = len(products)
+
+    def action_view_products(self):
+        for rec in self:
+            products = []
+            action = self.env.ref('sale.product_template_action').read()[0]
+            for line in rec.vendor_product_ids:
+                if line.name == rec:
+                    products.append(line.product_tmpl_id.id)
+            action['domain'] = [('id', 'in', products)]
+            return action
+
+    @api.depends('sale_order_line_ids')
+    def _compute_orders(self):
+
+        for rec in self:
+            all = paid = 0
+            for line in rec.sale_order_line_ids:
+                if line.order_id.state not in ['draft', 'cancel', 'close']:
+                    all += line.price_subtotal
+                    if line.invoice_status == 'invoiced':
+                        paid += line.price_subtotal
+            rec.order_all = all
+            rec.order_paid = paid
+            rec.order_pending = rec.order_all - rec.order_paid
+
     @api.constrains('partner_related_ids', 'partner_related_ids.related_partner_id')
     def _constrains_partner_related_ids(self):
         for rec in self:

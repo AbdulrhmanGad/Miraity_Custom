@@ -1,6 +1,26 @@
 from odoo import api, fields, models
 
 
+class ProductProduct(models.Model):
+    _inherit = 'product.product'
+
+    def name_get(self):
+        # Prefetch the fields used by the `name_get`, so `browse` doesn't fetch other fields
+        self.browse(self.ids).read(['name', 'sku_no'])
+        return [(template.id, '%s%s' % (template.sku_no and '[%s] ' % template.sku_no or '', template.name))
+                for template in self]
+
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        super(ProductProduct, self).name_search(name)
+        args = args or []
+        domain = []
+        if name:
+            domain = ['|', '|',('sku_no', operator, name), ('name', operator, name), ('default_code', operator, name)]
+        results = self.search(domain + args, limit=limit)
+        return results.name_get()
+
+
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 

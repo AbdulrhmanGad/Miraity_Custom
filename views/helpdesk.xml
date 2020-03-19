@@ -6,8 +6,12 @@
             <field name="model">helpdesk.ticket</field>
             <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='name']" position="after">
-                    <field name="code" readonly="1"/>
+                <xpath expr="//field[@name='name']/.." position="after">
+                    <div class="oe_title">
+                        <h1>
+                            <field name="code" readonly="1"/>
+                        </h1>
+                    </div>
                 </xpath>
                 <xpath expr="//field[@name='priority']" position="after">
                     <field name="action_type"/>
@@ -41,7 +45,10 @@
                     <!--                    <attribute name="options">{'no_create': True}</attribute>-->
                 </xpath>
                 <xpath expr="//field[@name='product_id']" position="after">
-                    <field name="sale_order_gift_id" readonly="True"/>
+                    <field name="sale_order_gift_id" readonly="True"
+                           attrs="{'invisible': [('sale_order_gift_id', '=', False)]}"/>
+                    <field name="replacement_id" readonly="True"
+                           attrs="{'invisible': [('replacement_id', '=', False)]}"/>
                 </xpath>
             </field>
         </record>
@@ -134,7 +141,7 @@
                         YOU Will Create Sale Order For Replacement
                     </div>
                     <group>
-                        <field name="product_id" options="{'no_create':True}"/>
+                        <field name="product_id" domain="[('sku_no', '!=', False)]" options="{'no_create':True}"/>
                     </group>
                     <field name="is_gift" invisible="1"/>
                     <field name="is_replacement" invisible="1"/>

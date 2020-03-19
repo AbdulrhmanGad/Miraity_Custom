@@ -22,39 +22,36 @@ class SaleOrderGiftReplace(models.TransientModel):
     def action_apply(self):
         for rec in self:
             if rec.is_gift:
-                if rec.ticket_id.gift_created:
-                    raise ValidationError(_("Gift Already Created !!"))
-                else:
-                    if rec.ticket_id.partner_id:
-                        if rec.ticket_id.sale_order_id:
-                            if rec.product_id:
-                                if rec.product_id.sku_no:
-                                    sale_id = self.env['sale.order'].create({
-                                        'partner_id': rec.ticket_id.partner_id.id,
-                                        'ticket_id': (4, rec.ticket_id.id),
-                                        # 'miraity_type': 'gift',
-                                    })
-                                    self.env['sale.order.line'].create({
-                                        'order_id': sale_id.id,
-                                        'product_id': rec.product_id.id,
-                                        'name': "[" + rec.product_id.sku_no + "]" + rec.product_id.name,
-                                        'product_uom_qty': 1,
-                                        'price_unit': 0,
-                                    })
+                if rec.ticket_id.partner_id:
+                    if rec.ticket_id.sale_order_id:
+                        if rec.product_id:
+                            if rec.product_id.sku_no:
+                                sale_id = self.env['sale.order'].create({
+                                    'partner_id': rec.ticket_id.partner_id.id,
+                                    'ticket_id': (4, rec.ticket_id.id),
+                                    # 'miraity_type': 'gift',
+                                })
+                                self.env['sale.order.line'].create({
+                                    'order_id': sale_id.id,
+                                    'product_id': rec.product_id.id,
+                                    'name': "[" + rec.product_id.sku_no + "]" + rec.product_id.name,
+                                    'product_uom_qty': 1,
+                                    'price_unit': 0,
+                                })
 
-                                else:
-                                    raise ValidationError(_("SKU Number for Product Missed"))
-                                rec.ticket_id.gift_created = 1
-                                rec.ticket_id.sale_order_gift_id = sale_id.id
                             else:
-                                raise ValidationError(_("product is required"))
+                                raise ValidationError(_("SKU Number for Product Missed"))
+                            rec.ticket_id.gift_created = 1
+                            rec.ticket_id.sale_order_gift_id = sale_id.id
                         else:
-                            raise ValidationError(_("Sale order is required"))
+                            raise ValidationError(_("product is required"))
                     else:
-                        raise ValidationError(_("Customer is required"))
+                        raise ValidationError(_("Sale order is required"))
+                else:
+                    raise ValidationError(_("Customer is required"))
             elif rec.is_replacement:
-                if rec.ticket_id.replacement_created:
-                    raise ValidationError(_("Gift Already Created !!"))
+                if rec.ticket_id.replacement_id:
+                    raise ValidationError(_("Replacement Already Created !!"))
                 else:
                     if rec.ticket_id.partner_id:
                         if rec.ticket_id.sale_order_id:
@@ -63,7 +60,7 @@ class SaleOrderGiftReplace(models.TransientModel):
                                     sale_id = self.env['sale.order'].create({
                                         'ticket_id': (4, rec.ticket_id.id),
                                         'partner_id': rec.ticket_id.partner_id.id,
-                                        'miraity_type': 'gift', # XXXXX I think it Should be replacement
+                                        'miraity_type': 'replacement', # XXXXX I think it Should be replacement
                                     })
                                     self.env['sale.order.line'].create({
                                         'order_id': sale_id.id,
@@ -75,7 +72,7 @@ class SaleOrderGiftReplace(models.TransientModel):
                                 else:
                                     raise ValidationError(_("SKU Number for Product Missed"))
                                 rec.ticket_id.replacement_created = 1
-                                rec.ticket_id.sale_order_gift_id = sale_id.id
+                                rec.ticket_id.replacement_id = sale_id.id
                             else:
                                 raise ValidationError(_("product is required"))
                         else:
@@ -90,44 +87,57 @@ class HelpDeskTicket(models.Model):
     code = fields.Char(string="Code", required=False, )
     action_type = fields.Selection(string="Type", selection=[('return', 'Return'), ('refund', 'Refund'), ])
     use_replacement = fields.Boolean(related='team_id.use_replacement', string='Use Replacement')
-    sale_order_gift_id = fields.Many2one(comodel_name="sale.order", string="Gift number", )
+    sale_order_gift_id = fields.Many2one(comodel_name="sale.order", string="Gift", )
+    replacement_id = fields.Many2one(comodel_name="sale.order", string="Replacement", )
     use_gift = fields.Boolean(related='team_id.use_gift', string='Use Gifts')
     gift_created = fields.Boolean(string="gift created !", )
     replacement_created = fields.Boolean(string="gift created !", )
 
     def create_gift(self):
         for rec in self:
-            view = self.env.ref('Miraity_Custom.sale_order_gift_replacement_view')
-            new_id = self.env['sale.order.gift.replacement']
-
-            return {
-                'name': _("You Will Create Sale Order"),
-                'view_mode': 'form',
-                'view_id': view.id,
-                'res_id': False,
-                'context': {'default_is_gift': 1, 'default_ticket_id': self.id},
-                'view_type': 'form',
-                'res_model': 'sale.order.gift.replacement',
-                'type': 'ir.actions.act_window',
-                'target': 'new',
-            }
+            if rec.sale_order_gift_id:
+                raise ValidationError(_("Gift Already Created !!"))
+            elif rec.replacement_id:
+                raise ValidationError(_("There are a Replacement created for this Order !!"))
+            else:
+                if rec.sale_order_id and rec.product_id:
+                    view = self.env.ref('Miraity_Custom.sale_order_gift_replacement_view')
+                    return {
+                        'name': _("You Will Create Sale Order"),
+                        'view_mode': 'form',
+                        'view_id': view.id,
+                        'res_id': False,
+                        'context': {'default_is_gift': 1, 'default_ticket_id': self.id},
+                        'view_type': 'form',
+                        'res_model': 'sale.order.gift.replacement',
+                        'type': 'ir.actions.act_window',
+                        'target': 'new',
+                    }
+                else:
+                    raise ValidationError(_("Please Enter Sale Order Number and it's product"))
 
     def create_replacement(self):
         for rec in self:
-            view = self.env.ref('Miraity_Custom.sale_order_gift_replacement_view')
-            new_id = self.env['sale.order.gift.replacement']
-
-            return {
-                'name': _("You Will Create Sale Order"),
-                'view_mode': 'form',
-                'view_id': view.id,
-                'res_id': False,
-                'context': {'default_is_replacement': 1, 'default_ticket_id': self.id},
-                'view_type': 'form',
-                'res_model': 'sale.order.gift.replacement',
-                'type': 'ir.actions.act_window',
-                'target': 'new',
-            }
+            if rec.replacement_id:
+                raise ValidationError(_("Replacement Already Created !!"))
+            elif rec.sale_order_gift_id:
+                raise ValidationError(_("There are a gift created for this Order !!"))
+            else:
+                if rec.sale_order_id and rec.product_id:
+                    view = self.env.ref('Miraity_Custom.sale_order_gift_replacement_view')
+                    return {
+                        'name': _("You Will Create Sale Order"),
+                        'view_mode': 'form',
+                        'view_id': view.id,
+                        'res_id': False,
+                        'context': {'default_is_replacement': 1, 'default_ticket_id': self.id},
+                        'view_type': 'form',
+                        'res_model': 'sale.order.gift.replacement',
+                        'type': 'ir.actions.act_window',
+                        'target': 'new',
+                    }
+                else:
+                    raise ValidationError(_("Please Enter Sale Order Number and it's product"))
 
     @api.model
     def create(self, values):

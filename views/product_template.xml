@@ -54,8 +54,8 @@
                     <!--                           attrs="{'invisible': [('type', '!=', 'product')]}"/>-->
                     <!--                    <field name="magento_test_qty" groups="Miraity_Custom.group_stock_magento_user"-->
                     <!--                           attrs="{'invisible': [('type', '!=', 'product')]}"/>-->
-                    <field name='e_commerce'/>
                     <field name='active'/>
+                    <field name='e_commerce' attrs="{'invisible': [('type', '!=', 'product')]}"/>
                     <field name='is_gift' attrs="{'invisible': [('type', '!=', 'product')]}"
                            groups="stock.group_stock_manager"/>
                 </xpath>

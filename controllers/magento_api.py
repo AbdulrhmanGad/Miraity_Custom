@@ -231,7 +231,10 @@ class AbstractMagentoApi(models.AbstractModel):
                 sale_id = http.request.env['sale.order'].sudo().search([('name', '=', kw['order'])])
                 if len(sale_id) != 0:
                     try:
-                        sale_id.write({"state": kw['state']})
+                        if kw['state'] == 0:
+                            sale_id.write({"state": kw['state']})
+                        elif kw['state'] == 0:
+                            sale_id.write({"state": kw['state']})
                         http.request.env['authenticate.api'].logout()
                         ##################### Ticket Create if state cancelled ###############################
                         if int(kw['state']) == 6:
