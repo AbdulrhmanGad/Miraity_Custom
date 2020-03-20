@@ -6,18 +6,25 @@ class SaleOrderGiftReplace(models.TransientModel):
     _name = 'sale.order.gift.replacement'
     _description = 'sale order gift or replacement'
 
-    is_gift = fields.Boolean(string="Gift",)
-    is_replacement = fields.Boolean(string="Replacement",)
+    is_gift = fields.Boolean(string="Gift", )
+    is_replacement = fields.Boolean(string="Replacement", )
     product_id = fields.Many2one(comodel_name="product.product", string="product", )
-    ticket_id = fields.Many2one(comodel_name="helpdesk.ticket", string="Ticket" )
+    ticket_id = fields.Many2one(comodel_name="helpdesk.ticket", string="Ticket")
 
     @api.onchange('product_id')
     def _onchange_product_id(self):
-        res ={}
+        res = {}
         for rec in self:
             if rec.is_gift:
                 res['domain'] = {'product_id': [('is_gift', '=', 1)]}
         return res
+
+    def create_ticket_number(self, code):
+        sale_ids = self.env['sale.order'].search([('ticket_no', '=', code)])
+        while len(sale_ids) >= 1:
+            code = self.ticket_id.partner_id.random_number(8)
+            self.create_ticket_number(code)
+        return code
 
     def action_apply(self):
         for rec in self:
@@ -28,8 +35,10 @@ class SaleOrderGiftReplace(models.TransientModel):
                             if rec.product_id.sku_no:
                                 sale_id = self.env['sale.order'].create({
                                     'partner_id': rec.ticket_id.partner_id.id,
+                                    'ticket_no': 'GIFT' + str(
+                                        self.create_ticket_number(self.ticket_id.partner_id.random_number(8))),
                                     'ticket_id': (4, rec.ticket_id.id),
-                                    # 'miraity_type': 'gift',
+                                    'miraity_type': 'gift',
                                 })
                                 self.env['sale.order.line'].create({
                                     'order_id': sale_id.id,
@@ -42,7 +51,7 @@ class SaleOrderGiftReplace(models.TransientModel):
                             else:
                                 raise ValidationError(_("SKU Number for Product Missed"))
                             rec.ticket_id.gift_created = 1
-                            rec.ticket_id.sale_order_gift_id = sale_id.id
+                            rec.ticket_id.sale_order = sale_id.id
                         else:
                             raise ValidationError(_("product is required"))
                     else:
@@ -60,7 +69,9 @@ class SaleOrderGiftReplace(models.TransientModel):
                                     sale_id = self.env['sale.order'].create({
                                         'ticket_id': (4, rec.ticket_id.id),
                                         'partner_id': rec.ticket_id.partner_id.id,
-                                        'miraity_type': 'replacement', # XXXXX I think it Should be replacement
+                                        'ticket_no': 'RPLC' + str(
+                                            self.create_ticket_number(self.ticket_id.partner_id.random_number(8))),
+                                        'miraity_type': 'replacement',  # XXXXX I think it Should be replacement
                                     })
                                     self.env['sale.order.line'].create({
                                         'order_id': sale_id.id,
@@ -87,18 +98,19 @@ class HelpDeskTicket(models.Model):
     code = fields.Char(string="Code", required=False, )
     action_type = fields.Selection(string="Type", selection=[('return', 'Return'), ('refund', 'Refund'), ])
     use_replacement = fields.Boolean(related='team_id.use_replacement', string='Use Replacement')
-    sale_order_gift_id = fields.Many2one(comodel_name="sale.order", string="Gift", )
-    replacement_id = fields.Many2one(comodel_name="sale.order", string="Replacement", )
+    sale_order = fields.Many2one(comodel_name="sale.order", string="Gift", )
+    sale_order_gift_id = fields.Many2one(comodel_name="sale.order", string="Gift", ) # will remove
+    replacement_id = fields.Many2one(comodel_name="sale.order", string="replacement", ) # will remove
+    sale_order = fields.Many2one(comodel_name="sale.order", string="Gift", )
+    origin = fields.Char(related="sale_order.ticket_no", required=False, )
     use_gift = fields.Boolean(related='team_id.use_gift', string='Use Gifts')
     gift_created = fields.Boolean(string="gift created !", )
     replacement_created = fields.Boolean(string="gift created !", )
 
     def create_gift(self):
         for rec in self:
-            if rec.sale_order_gift_id:
-                raise ValidationError(_("Gift Already Created !!"))
-            elif rec.replacement_id:
-                raise ValidationError(_("There are a Replacement created for this Order !!"))
+            if rec.sale_order:
+                raise ValidationError(_("Gift - Replacement Already Created !!"))
             else:
                 if rec.sale_order_id and rec.product_id:
                     view = self.env.ref('Miraity_Custom.sale_order_gift_replacement_view')
@@ -119,9 +131,7 @@ class HelpDeskTicket(models.Model):
     def create_replacement(self):
         for rec in self:
             if rec.replacement_id:
-                raise ValidationError(_("Replacement Already Created !!"))
-            elif rec.sale_order_gift_id:
-                raise ValidationError(_("There are a gift created for this Order !!"))
+                raise ValidationError(_("Gift - Replacement Already Created !!"))
             else:
                 if rec.sale_order_id and rec.product_id:
                     view = self.env.ref('Miraity_Custom.sale_order_gift_replacement_view')
@@ -163,7 +173,7 @@ class HelpDeskTicket(models.Model):
 
 class HelpDeskTicketType(models.Model):
     _inherit = 'helpdesk.ticket.type'
-    code = fields.Char(string="Code",  required=False, )
+    code = fields.Char(string="Code", required=False, )
 
 
 class HelpDeskTeam(models.Model):
@@ -171,4 +181,3 @@ class HelpDeskTeam(models.Model):
 
     use_replacement = fields.Boolean('Replacement')
     use_gift = fields.Boolean('Gift')
-

@@ -45,10 +45,9 @@
                     <!--                    <attribute name="options">{'no_create': True}</attribute>-->
                 </xpath>
                 <xpath expr="//field[@name='product_id']" position="after">
-                    <field name="sale_order_gift_id" readonly="True"
-                           attrs="{'invisible': [('sale_order_gift_id', '=', False)]}"/>
-                    <field name="replacement_id" readonly="True"
-                           attrs="{'invisible': [('replacement_id', '=', False)]}"/>
+                    <field name="sale_order" readonly="True"
+                           attrs="{'invisible': [('sale_order', '=', False)]}"/>
+                    <field name="origin" readonly="True" />
                 </xpath>
             </field>
         </record>

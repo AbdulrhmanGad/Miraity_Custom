@@ -5,6 +5,7 @@ from odoo.exceptions import ValidationError
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
+    ticket_no = fields.Char(string="Ticket NO", required=False, )
     state = fields.Selection([
         ('draft', 'Draft'),
         ('sale', 'Approved'),
@@ -25,7 +26,7 @@ class SaleOrder(models.Model):
                                                                       ])
     is_sales_channel = fields.Boolean(related="partner_id.is_sales_channel")
     shipping_no = fields.Char(string="Shipping No", )
-    ticket_id = fields.One2many(comodel_name="helpdesk.ticket", inverse_name="sale_order_gift_id",  string="Ticket")
+    ticket_id = fields.One2many(comodel_name="helpdesk.ticket", inverse_name="sale_order",  string="Ticket")
     company_id = fields.Many2one('res.company', string='Company', readonly=True,
                                  default=lambda self: self.env.user.company_id)
     payment_method = fields.Selection(string="", selection=[('1', 'cash'), ('2', 'bank'), ], required=False, )

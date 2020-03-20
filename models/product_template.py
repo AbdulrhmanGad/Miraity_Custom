@@ -26,11 +26,6 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
 
-    def delelte_all_sku(self):
-        for rec in self:
-            for line in rec.env['product.product'].search([]):
-                line.sku_no = False
-
     ar_name = fields.Char('Arabic Brand Name')
     brand_id = fields.Many2one('product.brand', string='Brand', help='Select a brand for this product')
     sku_no = fields.Char('Sku No', readonly=True, copy=False)

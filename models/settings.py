@@ -46,3 +46,14 @@ class ResConfigSettings(models.TransientModel):
 
     def generate_magento_token(self):
             self.env['ir.config_parameter'].sudo().set_param('base_setup.magento_token', secrets.token_hex(20))
+
+    def delete_partner_codes(self):
+        for rec in self:
+            for line in rec.env['res.partner'].search([]):
+                line.supplier_no = False
+                line.code = False
+
+    def delete_all_sku(self):
+        for rec in self:
+            for line in rec.env['product.product'].search([]):
+                line.sku_no = False
