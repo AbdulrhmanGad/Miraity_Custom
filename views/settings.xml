@@ -7,6 +7,10 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//div[hasclass('settings')]" position="inside">
+                <button name="delete_partner_codes" class="oe_highlight" type="object" string="Delete all Partner codes"/>
+                <span>OR</span>
+                <button name="delete_all_sku" class="oe_highlight" type="object" string="Delete all Products SKU"/>
+
                 <div class="app_settings_block" data-string="Miraity Settings" string="Miraity"
                      data-key="Miraity_Custom">
 

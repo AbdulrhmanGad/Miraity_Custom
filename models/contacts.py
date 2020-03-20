@@ -6,11 +6,6 @@ from random import randint
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    def delelte_partner_codes(self):
-        for rec in self:
-            for line in rec.env['res.partner'].search([]):
-                line.supplier_no = False
-                line.code = False
 
     code = fields.Char(string="Internal Reference", readonly=True)
     supplier_no = fields.Char(string="Supplier No", readonly=True)
@@ -121,7 +116,7 @@ class ResPartner(models.Model):
             # if rec.channel_type == '2' or rec.channel_type == '3' and rec.is_sales_channel == False:
             #     raise ValidationError(_("Contact must be sales channel"))
 
-    def random_number(n):
+    def random_number(self, n):
         range_start = 10 ** (n - 1)
         range_end = (10 ** n) - 1
         return randint(range_start, range_end)
