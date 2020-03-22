@@ -4,6 +4,7 @@
                 name="Generate Missing Sequence"
                 binding_model="product.category"
                 res_model="wizard.product.category"
+                groups="stock.group_stock_manager"
                 view_mode="form" target="new" />
 
     <record id="generate_missing_ategory_sequence_view" model="ir.ui.view">

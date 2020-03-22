@@ -49,6 +49,23 @@ class SaleOrder(models.Model):
         for order in self:
             order.ticket_count = len(order.ticket_id)
 
+    def name_get(self):
+        result = []
+        for rec in self:
+            name = ('%s [ %s - %s ]' % (rec.name, rec.state, rec.date_order))
+            result.append((rec.id, name))
+        return result
+
+
+    @api.model
+    def name_search(self, name, args=None, operator='ilike', limit=100):
+        args = args or []
+        recs = self.browse()
+        if not recs:
+            recs = self.search(['|','|',('name', operator, name), ('date_order', operator, name), ('state', operator, name)] + args, limit=limit)
+        return recs.name_get()
+
+
     # @api.constrains('shipping_no')
     # def _onchange_shipping_no(self):
     #     for rec in self:

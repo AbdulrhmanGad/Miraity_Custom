@@ -6,10 +6,11 @@
                 binding_model="product.template"
                 res_model="miss.product.sku"
                 view_mode="form" target="new"
+                groups="stock.group_stock_manager"
                 context="{
             'default_res_ids': active_ids,
             }"
-                groups="stock.group_stock_manager"/>
+    />
     <act_window id="update_product_to_magento"
                 name="Update To Magento"
                 binding_model="product.template"
@@ -42,11 +43,12 @@
                 name="Generate Missing Contact Code"
                 binding_model="res.partner"
                 res_model="miss.contact.code"
+                groups="base.group_system"
                 view_mode="form" target="new"
                 context="{
             'default_res_ids': active_ids,
             }"
-                groups="base.group_partner_manager"/>
+    />
 
     <record id="partner_wizard_view" model="ir.ui.view">
         <field name="name">Missing Contact Code</field>
