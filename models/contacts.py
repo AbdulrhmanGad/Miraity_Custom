@@ -48,7 +48,7 @@ class ResPartner(models.Model):
                                          string="Vendor related Product")
 
     products_count = fields.Integer(string="products count" )
-    product_count = fields.Integer(string="products count",compute="_compute_product_count")
+    product_count = fields.Integer(string="product count",compute="_compute_product_count")
 
     @api.depends('vendor_product_ids')
     def _compute_product_count(self):
@@ -163,6 +163,7 @@ class ResPartner(models.Model):
 
 class RelatedPartner(models.Model):
     _name = 'partner.related.partners'
+    _description = 'partners related partner'
 
     partner_id = fields.Many2one(comodel_name="res.partner", )
     related_partner_id = fields.Many2one(comodel_name="res.partner", required=True)
@@ -185,6 +186,7 @@ class RelatedPartner(models.Model):
 
 class RelatedProducts(models.Model):
     _name = 'partner.related.products'
+    _description = 'partners related products'
 
     partner_id = fields.Many2one(comodel_name="res.partner", )
     product_id = fields.Many2one(comodel_name="product.template", required=True)
@@ -195,9 +197,10 @@ class RelatedProducts(models.Model):
 
 class RelatedPartnerCheque(models.Model):
     _name = 'partner.related.cheque'
+    _description = 'partners cheque'
 
     partner_id = fields.Many2one(comodel_name="res.partner", track_visibility='onchange')
     value = fields.Float(string="Value", track_visibility='onchange')
-    date = fields.Date(string="Date", track_visibility='onchange')
+    date = fields.Date(string="Request Date", track_visibility='onchange')
     today = fields.Date(string="Date", required=True, default=date.today(), track_visibility='onchange', readonly=True)
 

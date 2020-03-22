@@ -8,7 +8,7 @@ from datetime import date, datetime
 
 class AbstractContactApi(models.AbstractModel):
     _name = 'contact.api'
-
+    _description='create contact api'
     # {
     #     "jsonrpc": "2.0",
     #     "params": {

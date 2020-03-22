@@ -6,6 +6,7 @@ from odoo import models
 
 class AbstractCallCenterApi(models.AbstractModel):
     _name = 'call.center.api'
+    _description='call center api'
 
     def search_customer(self, kw):
         call_center_user_id = http.request.env['ir.config_parameter'].sudo().get_param('base_setup.call_center_user_id')

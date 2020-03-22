@@ -6,6 +6,7 @@ from odoo import models
 
 class AbstractMagentoApi(models.AbstractModel):
     _name = 'magento.api'
+    _description='magento integration api'
 
     # {"jsonrpc": "2.0",
     #  "params": {"token": "583eb6fe45dab22785b65a7713cb32092a1d423b", "customer": "CT0004", "products": [

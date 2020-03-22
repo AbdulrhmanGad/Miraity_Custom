@@ -6,6 +6,7 @@ from odoo import models
 
 class AbstractProductApi(models.AbstractModel):
     _name = 'product.api'
+    _description='create product api'
 
     #  {"jsonrpc": "2.0","params": {"product": "", "partner": "", "review": "5"}}
     def create_product_review(self, kw):

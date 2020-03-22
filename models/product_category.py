@@ -12,6 +12,7 @@ class ProductCategory(models.Model):
     e_commerce = fields.Boolean(string="E-Commerce", )
     logo = fields.Binary(string="")
     code = fields.Char(string="", required=False, )
+
     @api.model
     def create(self, values):
         seq = self.env['ir.sequence'].next_by_code('product.category') or '/'

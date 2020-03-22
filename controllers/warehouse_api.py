@@ -6,6 +6,7 @@ from odoo import models
 
 class AbstractWarehouseApi(models.AbstractModel):
     _name = 'warehouse.api'
+    _description='warehouse api'
 
     def create_transfer(self, kw):
         config = http.request.env['res.config.settings'].sudo().search([], order='id desc', limit=1)

@@ -104,8 +104,8 @@ class HelpDeskTicket(models.Model):
     sale_order = fields.Many2one(comodel_name="sale.order", string="Gift", )
     origin = fields.Char(related="sale_order.ticket_no", required=False, )
     use_gift = fields.Boolean(related='team_id.use_gift', string='Use Gifts')
-    gift_created = fields.Boolean(string="gift created !", )
-    replacement_created = fields.Boolean(string="gift created !", )
+    gift_created = fields.Boolean(string="Gift created !", )
+    replacement_created = fields.Boolean(string="Replacement created !", )
 
     def create_gift(self):
         for rec in self:

@@ -6,6 +6,7 @@ from odoo import models
 
 class AbstractMagentoApi(models.AbstractModel):
     _name = 'authenticate.api'
+    _description='api authentication'
 
     # {"jsonrpc": "2.0","params":{"db":"odoo13","login":"admin","password":"admin"}}
     # @http.route('/web/session/authenticate', type='json', auth='none')

@@ -4,7 +4,6 @@ from odoo import api, fields, models
 class ProductProduct(models.Model):
     _inherit = 'product.product'
 
-
     def name_get(self):
         # Prefetch the fields used by the `name_get`, so `browse` doesn't fetch other fields
         self.browse(self.ids).read(['name', 'sku_no'])
@@ -25,8 +24,7 @@ class ProductProduct(models.Model):
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
-
-    ar_name = fields.Char('Arabic Brand Name')
+    ar_name = fields.Char('Product Arabic Name')
     brand_id = fields.Many2one('product.brand', string='Brand', help='Select a brand for this product')
     sku_no = fields.Char('Sku No', readonly=True, copy=False)
     ready_test_qty = fields.Float(string="Sample", )
@@ -78,6 +76,7 @@ class ProductTemplate(models.Model):
 
 class SaleChannelReview(models.Model):
     _name = 'product.review'
+    _description = 'products customer review'
 
     product_id = fields.Many2one(comodel_name="product.template",)
     partner_id = fields.Many2one(comodel_name="res.partner", required=True)

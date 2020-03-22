@@ -8,6 +8,7 @@ from odoo import api, fields, models
 
 class ProductCategoryWizard(models.TransientModel):
     _name = 'wizard.product.category'
+    _description = 'add sequence to category'
 
     def action_apply(self):
         for rec in self:
